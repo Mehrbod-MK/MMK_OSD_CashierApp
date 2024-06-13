@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34902.65
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MMK_OSD_CashierApp", "MMK_OSD_CashierApp\MMK_OSD_CashierApp.csproj", "{D85C8032-1617-4EAA-98A9-05F0EF200944}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D85C8032-1617-4EAA-98A9-05F0EF200944}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D85C8032-1617-4EAA-98A9-05F0EF200944}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D85C8032-1617-4EAA-98A9-05F0EF200944}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D85C8032-1617-4EAA-98A9-05F0EF200944}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {28F09C6A-2C65-4FCD-BEAB-5D77C9EB4E15}
+	EndGlobalSection
+EndGlobal
