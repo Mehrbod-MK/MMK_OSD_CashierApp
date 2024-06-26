@@ -8,7 +8,6 @@
         Title="MainWindow" Height="450" Width="800"
         Background="#03254c">
     <Grid>
-        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"
-                   FontSize="50">سلام</TextBlock>
+        
     </Grid>
 </Window>
