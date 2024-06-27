@@ -5,9 +5,33 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MMK_OSD_CashierApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
-        Background="#03254c">
+        Title="سامانه مدیریت صندوقداری فروشگاه - صفحه ورود" Width="640" Height="480" 
+        Background="#ffffff"
+        WindowStyle="SingleBorderWindow"
+        FlowDirection="RightToLeft"
+        >
     <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition/>
+            <RowDefinition Height="0.2*"/>
+            <RowDefinition Height="0.3*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        
+        <!-- Main Title -->
+        <TextBlock Grid.ColumnSpan="3" FontSize="30"
+                   HorizontalAlignment="Center" VerticalAlignment="Center" 
+                   TextWrapping="Wrap" 
+                   TextAlignment="Center">
+            به سامانه مدیریت صندوقداری فروشگاه زنجیره‌ای خوش آمدید
+        </TextBlock>
         
     </Grid>
 </Window>
