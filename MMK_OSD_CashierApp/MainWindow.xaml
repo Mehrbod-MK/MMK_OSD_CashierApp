@@ -12,6 +12,15 @@
         ResizeMode="CanMinimize"
         WindowStartupLocation="CenterScreen"
         >
+
+    <Window.Resources>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="LightGray"/>
+        </Style>
+    </Window.Resources>
+
     <Grid>
 
         <Grid.RowDefinitions>
@@ -41,6 +50,72 @@
                 جهت ورود، یکی از گزینه‌های ذیل را انتخاب فرمایید:
             </TextBlock>
         </StackPanel>
+
+        <Button Margin="7px" Grid.Column="0" Grid.Row="1">
+            <!-- Add round corners to button -->
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="17"/>
+                </Style>
+            </Button.Resources>
+
+            <Button.Content>
+                <StackPanel Orientation="Vertical">
+                    <Image Width="128" Margin="10" Source="./Resources/img_CustomerClub.png">
+                        
+                    </Image>
+                    <TextBlock FontSize="20"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               TextAlignment="Center">باشگاه مشتریان</TextBlock>
+                </StackPanel>
+            </Button.Content>
+            
+        </Button>
+
+        <Button Margin="7px" Grid.Column="1" Grid.Row="1">
+            <!-- Add round corners to button -->
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="17"/>
+                </Style>
+            </Button.Resources>
+
+            <Button.Content>
+                <StackPanel Orientation="Vertical">
+                    <Image Width="128" Margin="10" Source="./Resources/img_Personnel.png">
+
+                    </Image>
+                    <TextBlock FontSize="20"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   TextAlignment="Center">سامانه پرسنلی</TextBlock>
+                </StackPanel>
+            </Button.Content>
+
+        </Button>
+
+        <Button Margin="7px" Grid.Column="2" Grid.Row="1">
+            <!-- Add round corners to button -->
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="17"/>
+                </Style>
+            </Button.Resources>
+
+            <Button.Content>
+                <StackPanel Orientation="Vertical">
+                    <Image Width="128" Margin="10" Source="./Resources/img_DBAdmin.png">
+
+                    </Image>
+                    <TextBlock FontSize="20"
+       HorizontalAlignment="Center"
+       VerticalAlignment="Center"
+       TextAlignment="Center">مدیر پایگاه داده</TextBlock>
+                </StackPanel>
+            </Button.Content>
+
+        </Button>
 
     </Grid>
 </Window>
