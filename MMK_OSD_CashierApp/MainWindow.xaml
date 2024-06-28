@@ -105,9 +105,7 @@
 
             <Button.Content>
                 <StackPanel Orientation="Vertical">
-                    <Image Width="128" Margin="10" Source="./Resources/img_DBAdmin.png">
-
-                    </Image>
+                    <Image Width="128" Margin="10" Source="./Resources/img_DBAdmin.png"/>
                     <TextBlock FontSize="20"
        HorizontalAlignment="Center"
        VerticalAlignment="Center"
@@ -116,6 +114,31 @@
             </Button.Content>
 
         </Button>
-
+        
+        <!-- Footer text:  Need Help? -->
+        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
+                   TextAlignment="Center"
+                   FontStyle="Italic">
+            
+            <StackPanel Orientation="Horizontal">
+                <Image Source="./Resources/img_Help.png"></Image>
+                <TextBlock VerticalAlignment="Center" FontSize="17">به راهنمایی نیاز دارید؟ </TextBlock>
+                <Label VerticalAlignment="Center" FontSize="17">
+                    <Hyperlink x:Name="hyperlink_VisitAppTutorial" NavigateUri="https://www.mehrbod-mk.ir" Hyperlink.RequestNavigate="Hyperlink_RequestNavigate">
+                        <TextBlock VerticalAlignment="Center">اینجا کیک کنید!</TextBlock>
+                    </Hyperlink>
+                </Label>
+            </StackPanel>
+        </TextBlock>
+        
+        <!-- Footer Text: Copyright -->
+        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
+                   Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" Margin="0 20 0 0">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock>توسعه‌دهنده:  مهربد ملاکاظمی خوبده - تمامی حقوق محفوظ است 1404-1403</TextBlock>
+            </StackPanel>
+        </TextBlock>
+        
     </Grid>
 </Window>

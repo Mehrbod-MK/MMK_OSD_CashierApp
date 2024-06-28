@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,6 +20,26 @@ namespace MMK_OSD_CashierApp
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            var hyperlink = sender as Hyperlink;
+
+            if (hyperlink == null)
+                return;
+
+            try
+            {
+                Process.Start(
+                    new ProcessStartInfo()
+                    {
+                        FileName = hyperlink.NavigateUri.ToString(),
+                        UseShellExecute = true,
+                    }
+                    );
+            }
+            catch(Exception ex) { }
         }
     }
 }
