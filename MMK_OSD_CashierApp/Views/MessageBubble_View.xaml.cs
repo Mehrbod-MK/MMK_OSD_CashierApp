@@ -60,12 +60,12 @@ namespace MMK_OSD_CashierApp.ViewModels
 
                 case 16:
                     image_MsgBox_Icon.Source = new BitmapImage(
-                        new Uri(@"pack://application:,,,,/Resources/ico_MsgBox_Error.png", UriKind.Absolute));
+                        new Uri(@"../Resources/ico_MsgBox_Error.png", UriKind.Relative));
                     break;
 
                 default:
                     image_MsgBox_Icon.Source = new BitmapImage(
-                        new Uri(@"pack://application:,,,,/Resources/ico_MsgBox_Info.png", UriKind.Absolute));
+                        new Uri(@"../Resources/ico_MsgBox_Info.png", UriKind.Relative));
                     break;
             }
 

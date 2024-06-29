@@ -58,7 +58,7 @@
                     </TextBox>
 
                     <!--- Password input -->
-                    <PasswordBox x:Name="textBox_Msg_Password" FontSize="12"
+                    <PasswordBox x:Name="textBox_Msg_Password" FontSize="12" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                          VerticalAlignment="Stretch"
                         Visibility="Visible">
                     </PasswordBox>

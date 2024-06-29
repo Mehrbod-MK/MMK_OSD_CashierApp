@@ -57,8 +57,15 @@ namespace MMK_OSD_CashierApp
 
             var workerVM = new ViewModels.Worker_ViewModel();
 
+            worker.RunWorkerCompleted += (sender, e) =>
+            {
+                Application.Current.Dispatcher.Invoke(() => this.IsEnabled = true);
+            };
+
             worker.DoWork += (sender, e) =>
             {
+                Application.Current.Dispatcher.Invoke(() => this.IsEnabled = false);
+
                 workerVM.ProgressState = "در حال بررسی اتصال به پایگاه داده";
 
                 // Check connection with ROOT DB.
@@ -110,11 +117,25 @@ namespace MMK_OSD_CashierApp
                             // If password was OK, exit.
                             break;
                         }
+                        else
+                        {
+                            // If Cancel or anything was pressed, exit loop.
+                            return;
+                        }
                     }
                 }
 
                 // Wait a little...
                 Task.Delay(500).Wait();
+
+                // Hide this window.
+                Application.Current.Dispatcher.Invoke(() => this.Hide());
+
+                // Finish worker.
+                worker.RunWorkerCompleted += (sender, e) =>
+                {
+                    
+                };
             };
 
             Dialog_Worker workerDialog = new(worker, workerVM);
