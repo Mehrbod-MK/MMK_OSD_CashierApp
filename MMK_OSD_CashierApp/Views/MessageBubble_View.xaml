@@ -1,0 +1,28 @@
+﻿<Window x:Class="MMK_OSD_CashierApp.ViewModels.MessageBubble_View"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MMK_OSD_CashierApp.ViewModels"
+        mc:Ignorable="d"
+        Title="پیام سیستم" Height="190" Width="472"
+        FlowDirection="RightToLeft"
+        Background="#f7f7f7">
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.25*"/>
+            <ColumnDefinition Width="0.8*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Image Source="{Binding Path=MsgBubble_IconPath, FallbackValue=./Resources/}"/>
+        </Grid>
+        
+    </Grid>
+</Window>

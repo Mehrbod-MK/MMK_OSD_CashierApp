@@ -51,7 +51,9 @@
             </TextBlock>
         </StackPanel>
 
-        <Button Margin="7px" Grid.Column="0" Grid.Row="1">
+        <!-- Button: Customer's Club -->
+        <Button x:Name="button_Login_CustomersClub" Margin="7px" Grid.Column="0" Grid.Row="1"
+                Click="button_Login_CustomersClub_Click">
             <!-- Add round corners to button -->
             <Button.Resources>
                 <Style TargetType="Border">
