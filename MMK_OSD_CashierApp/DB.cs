@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -69,7 +71,7 @@ namespace MMK_OSD_CashierApp
         /// Tests a password-less connection to MySQL's ROOT user for application to use.
         /// </summary>
         /// <returns>This task returns a <see cref="DBResult"/> structure.</returns>
-        public async Task<DBResult> sql_TestRootConnection()
+        public async Task<DBResult> sql_TestRootConnection(string? knownRootPassword = null)
         {
             try
             {
@@ -131,13 +133,27 @@ namespace MMK_OSD_CashierApp
             }
         }
 
+        public static string SecureStringToString(SecureString value)
+        {
+            IntPtr bstr = Marshal.SecureStringToBSTR(value);
+
+            try
+            {
+                return Marshal.PtrToStringBSTR(bstr);
+            }
+            finally
+            {
+                Marshal.FreeBSTR(bstr);
+            }
+        }
+
         #endregion
 
         #region DB_Private_Methods
 
         private string get_ConnectionString(string server = DB_DEFAULT_SERVER, int port = DB_DEFAULT_PORT,
             string schema = DB_DEFAULT_APP_SCHEMA,
-            string username = DB_DEFAULT_USERNAME, string password = "",
+            string username = DB_DEFAULT_USERNAME, string password = "", string? rootPassword = null,
             bool isRootConnection = false)
         {
             if (!isRootConnection)
@@ -148,10 +164,19 @@ namespace MMK_OSD_CashierApp
                     $"UID={username};" +
                     $"PASSWORD={password};";
             else
-                return
+            {
+                if (rootPassword == null)
+                    return
                     $"SERVER={server};" +
                     $"PORT={port};" +
                     $"UID={DB_ROOT_USER}";
+                else
+                    return
+                        $"SERVER={server};" +
+                        $"PORT={port};" +
+                        $"UID={DB_ROOT_USER}" +
+                        $"PASSWORD={rootPassword}";
+            }
         }
 
         private async Task<DBResult> establish_SQLConnection(

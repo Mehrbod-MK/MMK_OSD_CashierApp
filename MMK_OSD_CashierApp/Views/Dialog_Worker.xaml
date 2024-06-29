@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MMK_OSD_CashierApp"
         mc:Ignorable="d"
         Title="در حال انجام کار..." Width="640" Height="100"
-        ResizeMode="CanMinimize" Topmost="True" WindowStyle="ToolWindow"
+        ResizeMode="CanMinimize" WindowStyle="ToolWindow"
         FlowDirection="RightToLeft"
         WindowStartupLocation="CenterScreen"
         Loaded="Window_Loaded"

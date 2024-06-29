@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         Title="پیام سیستم" Height="190" Width="472"
         FlowDirection="RightToLeft"
-        Background="#f7f7f7">
+        Background="#f7f7f7"
+        WindowStartupLocation="CenterScreen">
     <Grid>
 
         <Grid.ColumnDefinitions>
@@ -21,7 +22,63 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <Image Source="{Binding Path=MsgBubble_IconPath, FallbackValue=./Resources/}"/>
+            <Image Margin="7px" x:Name="image_MsgBox_Image"/>
+        </Grid>
+
+        <Grid Grid.Column="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.2*"/>
+                    <ColumnDefinition Width="0.8*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition Height="0.5*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Message Type Icon -->
+                <Image x:Name="image_MsgBox_Icon"
+                    Grid.Column="0" Grid.Row="0" Margin="7px" Source="./../Resources/ico_MsgBox.png" />
+
+                <!--- Message Title -->
+                <TextBlock x:Name="text_Msg_Title"
+                           Grid.Column="1" Grid.Row="0" FontWeight="ExtraBold"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           TextAlignment="Center" FontSize="20">عنوان پیام</TextBlock>
+                
+                <!-- Message Text -->
+                <DockPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Stretch">
+                    <TextBlock x:Name="text_Msg_Text" DockPanel.Dock="Top" TextWrapping="Wrap"
+                        Margin="5px" FontSize="14"></TextBlock>
+
+                    <TextBox x:Name="textBox_Msg_Response" FontSize="12" VerticalScrollBarVisibility="Auto" 
+                             TextWrapping="Wrap" VerticalAlignment="Stretch" TextAlignment="Left"
+                             Visibility="Visible">
+                    </TextBox>
+
+                    <!--- Password input -->
+                    <PasswordBox x:Name="textBox_Msg_Password" FontSize="12"
+                         VerticalAlignment="Stretch"
+                        Visibility="Visible">
+                    </PasswordBox>
+                </DockPanel>
+
+                <!-- Message Bubble Buttons -->
+                <Grid Grid.Column="1" Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Button x:Name="button_1" Cursor="Hand" Grid.Column="2" Margin="3px" Click="Buttons_MessageBubble_Clicked">1</Button>
+                    <Button x:Name="button_2" Cursor="Hand" Grid.Column="1" Margin="3px" Click="Buttons_MessageBubble_Clicked">2</Button>
+                    <Button x:Name="button_3" Cursor="Hand" Grid.Column="0" Margin="3px" Click="Buttons_MessageBubble_Clicked">3</Button>
+                </Grid>
+                
+            </Grid>
+
         </Grid>
         
     </Grid>

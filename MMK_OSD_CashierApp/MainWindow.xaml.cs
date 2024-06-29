@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using MMK_OSD_CashierApp.ViewModels;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
 using System.Windows;
@@ -68,6 +69,48 @@ namespace MMK_OSD_CashierApp
                     workerVM.ProgressState = "پایگاه داده با رمز Root محافظت شده است.";
 
                     Task.Delay(100).Wait();
+
+                    // Display password dialog box.
+                    while (true)
+                    {
+                        MessageBubble_Result? msgBubble_Result = null;
+
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            var msgBubble_AskRootDBPassword =
+                                new MessageBubble_View(
+                                    "رمز پایگاه داده",
+                                    "لطفاً رمز پایگاه داده MySQL را وارد کنید:",
+                                    null,
+                                    MessageBoxImage.Warning,
+                                    msgBubble_Buttons: MessageBoxButton.OKCancel,
+                                    isResponseAPassword: true
+                                    );
+
+                            msgBubble_Result = msgBubble_AskRootDBPassword.DisplayMessageBubble();
+                        });
+
+                        if (msgBubble_Result == null)
+                            continue;
+
+                        if (msgBubble_Result.dialogResult == "OK")
+                        {
+                            workerVM.ProgressState = "بررسی رمز...";
+
+                            // Test the connection again.
+                            if(msgBubble_Result.password != null)
+                                dbResult_TestRoot = db.sql_TestRootConnection(DB.SecureStringToString(msgBubble_Result.password)).Result;
+
+                            // If incorrect again, continue loop.
+                            if (dbResult_TestRoot.result == DB.DBResultEnum.DB_ERROR)
+                            {
+                                continue;
+                            }
+
+                            // If password was OK, exit.
+                            break;
+                        }
+                    }
                 }
 
                 // Wait a little...

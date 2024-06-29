@@ -11,6 +11,8 @@
 
   <ItemGroup>
     <None Remove="Resources\gif_Loading.gif" />
+    <None Remove="Resources\ico_MsgBox_Info.png" />
+    <None Remove="Resources\ico_MsgBox_Warning.png" />
     <None Remove="Resources\img_CustomerClub.png" />
     <None Remove="Resources\img_DBAdmin.png" />
     <None Remove="Resources\img_Personnel.png" />
@@ -18,6 +20,8 @@
 
   <ItemGroup>
     <Resource Include="Resources\gif_Loading.gif" />
+    <Resource Include="Resources\ico_MsgBox_Info.png" />
+    <Resource Include="Resources\ico_MsgBox_Warning.png" />
     <Resource Include="Resources\img_CustomerClub.png" />
     <Resource Include="Resources\img_DBAdmin.png" />
     <Resource Include="Resources\img_Personnel.png" />
