@@ -131,7 +131,7 @@ namespace MMK_OSD_CashierApp
                 // Hide this window.
                 Application.Current.Dispatcher.Invoke(() => this.Hide());
 
-                // Finish worker.
+                // Finish worker -> Display Personnel Login Page.
                 worker.RunWorkerCompleted += (sender, e) =>
                 {
                     
