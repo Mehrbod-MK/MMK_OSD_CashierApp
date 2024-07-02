@@ -134,7 +134,8 @@ namespace MMK_OSD_CashierApp
                 // Finish worker -> Display Personnel Login Page.
                 worker.RunWorkerCompleted += (sender, e) =>
                 {
-                    
+                    var wnd_LoginPersonnel = new Login_Personnel(this);
+                    wnd_LoginPersonnel.Show();
                 };
             };
 

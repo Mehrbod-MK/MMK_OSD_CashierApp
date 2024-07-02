@@ -10,6 +10,9 @@
         ResizeMode="CanMinimize"
         WindowStartupLocation="CenterScreen"
         WindowStyle="SingleBorderWindow"
+        x:Name="Window_Login_Personnel"
+        
+        Closing="Window_Login_Personnel_Closing"
         >
     <Window.Background>
         <ImageBrush ImageSource="./Resources/img_Bkg_LoginPersonnel.jpg" 
@@ -39,7 +42,65 @@
         </Grid>
         
         <!-- Main login section -->
-        
+        <Grid Grid.Column="0" Grid.Row="0">
+
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            
+            <!-- Title Text -->
+            <TextBlock
+                FontSize="40"
+                FontWeight="ExtraBold"
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                >سامانه پرسنلی</TextBlock>
+
+            <!-- Enter National ID -->
+            <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="1"
+                        VerticalAlignment="Center">
+                <TextBlock Margin="5" FontSize="20">
+                    کد ملی:
+                </TextBlock>
+                <TextBox Margin="5" FontSize="20" Padding="3" TextAlignment="Center">
+                    
+                </TextBox>
+            </StackPanel>
+
+            <!-- Enter National ID -->
+            <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="2"
+            VerticalAlignment="Center">
+                <TextBlock Margin="5" FontSize="20">
+                    کلمه عبور:
+                </TextBlock>
+                <PasswordBox Margin="5" FontSize="20" Padding="3" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+                    
+                </PasswordBox>
+            </StackPanel>
+
+            <!-- Footer area -->
+            <Grid Grid.Column="0" Grid.Row="3">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                
+                <!-- Login button -->
+                <Button Grid.Row="1" Margin="5px" FontSize="20" Cursor="Hand" Background="Transparent">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="17"/>
+                        </Style>
+                    </Button.Resources>
+                    ورود به سامانه پرسنلی
+                </Button>
+                
+            </Grid>
+            
+        </Grid>
         
     </Grid>
 </Window>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Media;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
@@ -28,6 +29,8 @@ namespace MMK_OSD_CashierApp.ViewModels
     /// </summary>
     public partial class MessageBubble_View : Window
     {
+        private MessageBoxImage messageIcon = MessageBoxImage.None;
+
         public MessageBubble_View(
             string title = "عنوان پیام", 
             string text = "متن پیام", 
@@ -121,6 +124,10 @@ namespace MMK_OSD_CashierApp.ViewModels
                 textBox_Msg_Response.Visibility = Visibility.Collapsed;
                 textBox_Msg_Password.Visibility = Visibility.Visible;
             }
+            else
+            {
+                textBox_Msg_Password.Visibility = Visibility.Collapsed;
+            }
         }
 
         private string resultOfBubble = string.Empty;
@@ -152,6 +159,27 @@ namespace MMK_OSD_CashierApp.ViewModels
                 response = textBox_Msg_Response.Text,
                 password = textBox_Msg_Password.SecurePassword,
             };
+        }
+
+        private void Window_Message_Bubble_Loaded(object sender, RoutedEventArgs e)
+        {
+            switch ((int)messageIcon)
+            {
+                case 48:
+                    SystemSounds.Exclamation.Play();
+                    break;
+
+                case 16:
+                    SystemSounds.Hand.Play();
+                    break;
+
+                case 0:
+                    break;
+
+                default:
+                    SystemSounds.Asterisk.Play();
+                    break;
+            }
         }
     }
 }

@@ -8,7 +8,13 @@
         Title="پیام سیستم" Height="190" Width="472"
         FlowDirection="RightToLeft"
         Background="#f7f7f7"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        
+        x:Name="Window_Message_Bubble"
+        
+        Loaded="Window_Message_Bubble_Loaded"
+        
+        >
     <Grid>
 
         <Grid.ColumnDefinitions>
