@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 using MySql.Data;
 using MySql.Data.MySqlClient;
+using MySqlX.XDevAPI.Common;
 
 namespace MMK_OSD_CashierApp
 {
@@ -28,7 +30,10 @@ namespace MMK_OSD_CashierApp
         private string server = string.Empty;
         private int port = -1;
         private string schema = string.Empty;
-        private string username = string.Empty, password = string.Empty;
+        private string username = string.Empty;
+        private SecureString? password = null;
+
+        private MySqlConnection? lastConnection = null;
 
         #endregion
 
@@ -97,14 +102,13 @@ namespace MMK_OSD_CashierApp
             }
         }
 
-        public async Task<DBResult> sql_Execute_Scalar<S>(string sql_ConnectionString,
-            string scalarCommand)
+        public async Task<DBResult> sql_Execute_Scalar<S>(string scalarCommand)
         {
             try
             {
                 S? resultScalar = default(S);
 
-                using (var connection = new MySqlConnection(sql_ConnectionString))
+                using (var connection = new MySqlConnection(get_RecentConnectionString()))
                 {
                     connection.ConfigureAwait(false);
                     await connection.OpenAsync();
@@ -121,6 +125,73 @@ namespace MMK_OSD_CashierApp
                 {
                     result = DBResultEnum.DB_OK,
                     returnValue = resultScalar,
+                };
+            }
+            catch(Exception ex)
+            {
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_ERROR,
+                    returnValue = ex,
+                };
+            }
+        }
+
+        public async Task<DBResult> sql_Execute_Query(string sqlQueryCommand)
+        {
+            try
+            {
+                MySqlDataReader? resultReader = null;
+
+                lastConnection = new MySqlConnection(get_ConnectionString());
+
+                // using (var connection = new MySqlConnection(get_RecentConnectionString()))
+                // {
+                    lastConnection.ConfigureAwait(false);
+                    await lastConnection.OpenAsync();
+
+                    using (MySqlCommand command = new MySqlCommand(sqlQueryCommand, lastConnection))
+                    {
+                        command.ConfigureAwait(false);
+
+                        resultReader = command.ExecuteReader();
+                        resultReader.ConfigureAwait(false);
+                    }
+                // }
+
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_OK,
+                    returnValue = resultReader,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_ERROR,
+                    returnValue = ex,
+                };
+            }
+        }
+
+        public async Task<DBResult> sql_End_Query(MySqlDataReader dataReaderToClose)
+        {
+            try
+            {
+                dataReaderToClose.ConfigureAwait(false);
+
+                // Close and dispose query.
+                await dataReaderToClose.CloseAsync();
+                await dataReaderToClose.DisposeAsync();
+
+                // Close and dispoase recent connection.
+                await this.sql_End_Connection(this.lastConnection);
+
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_OK,
+                    returnValue = true,
                 };
             }
             catch(Exception ex)
@@ -151,31 +222,80 @@ namespace MMK_OSD_CashierApp
 
         #region DB_Private_Methods
 
-        private string get_ConnectionString(string server = DB_DEFAULT_SERVER, int port = DB_DEFAULT_PORT,
-            string schema = DB_DEFAULT_APP_SCHEMA,
-            string username = DB_DEFAULT_USERNAME, string password = "", string? rootPassword = null,
-            bool isRootConnection = false)
+        private string get_RecentConnectionString()
         {
-            if (!isRootConnection)
+            if (this.password == null)
+            {
+                return
+                    $"SERVER={server};" +
+                    $"PORT={port};" +
+                    $"DATABASE={schema};" +
+                    $"UID={username};";
+            }
+            else
+            {
                 return
                     $"SERVER={server};" +
                     $"PORT={port};" +
                     $"DATABASE={schema};" +
                     $"UID={username};" +
-                    $"PASSWORD={password};";
-            else
+                    $"PASSWORD={SecureStringToString(password)};";
+            }
+        }
+
+        private string get_ConnectionString(string server = DB_DEFAULT_SERVER, int port = DB_DEFAULT_PORT,
+            string schema = DB_DEFAULT_APP_SCHEMA,
+            string username = DB_DEFAULT_USERNAME, SecureString? password = null, SecureString? rootPassword = null,
+            bool isRootConnection = false)
+        {
+            if (!isRootConnection)
             {
-                if (rootPassword == null)
+                this.server = server;
+                this.port = port;
+                this.schema = schema;
+                this.username = username;
+                this.password = password;
+
+                if (password != null)
                     return
-                    $"SERVER={server};" +
-                    $"PORT={port};" +
-                    $"UID={DB_ROOT_USER}";
+                        $"SERVER={server};" +
+                        $"PORT={port};" +
+                        $"DATABASE={schema};" +
+                        $"UID={username};" +
+                        $"PASSWORD={SecureStringToString(password)};";
                 else
                     return
                         $"SERVER={server};" +
                         $"PORT={port};" +
-                        $"UID={DB_ROOT_USER}" +
-                        $"PASSWORD={rootPassword}";
+                        $"DATABASE={schema};" +
+                        $"UID={username};";
+            }
+            else
+            {
+                if (rootPassword == null)
+                {
+                    this.server = server;
+                    this.port = port;
+                    this.username = DB_ROOT_USER;
+
+                    return
+                    $"SERVER={server};" +
+                    $"PORT={port};" +
+                    $"UID={DB_ROOT_USER}";
+                }
+                else
+                {
+                    this.server = server;
+                    this.port = port;
+                    this.username = DB_ROOT_USER;
+                    this.password = rootPassword;
+
+                    return
+                       $"SERVER={server};" +
+                       $"PORT={port};" +
+                       $"UID={DB_ROOT_USER}" +
+                       $"PASSWORD={SecureStringToString(rootPassword)}";
+                }
             }
         }
 
@@ -184,8 +304,7 @@ namespace MMK_OSD_CashierApp
         {
             try
             {
-
-                var sqlConnection = new MySqlConnection();
+                var sqlConnection = new MySqlConnection(get_RecentConnectionString());
 
                 // Open the connection.
                 sqlConnection.ConfigureAwait(false);
@@ -203,6 +322,34 @@ namespace MMK_OSD_CashierApp
                 {
                     returnValue = ex,
                     result = DBResultEnum.DB_ERROR,
+                };
+            }
+        }
+
+        private async Task<DBResult> sql_End_Connection(MySqlConnection? mySqlConnection)
+        {
+            try
+            {
+                if (mySqlConnection != null && !mySqlConnection.IsDisposed)
+                {
+                    mySqlConnection.ConfigureAwait(false);
+
+                    await mySqlConnection.CloseAsync();
+                    await mySqlConnection.DisposeAsync();
+                }
+
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_OK,
+                    returnValue = true
+                };
+            }
+            catch(Exception ex)
+            {
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_ERROR,
+                    returnValue = ex
                 };
             }
         }

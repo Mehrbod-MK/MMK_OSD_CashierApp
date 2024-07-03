@@ -44,7 +44,17 @@ namespace MMK_OSD_CashierApp
                     }
                     );
             }
-            catch(Exception ex) { }
+            catch(Exception ex) 
+            {
+                MessageBox.Show(
+                    $"خطای ذیل در باز کردن لینک به وجود آمد:\n\n{ex.ToString()}",
+                    "خطای باز کردن لینک",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error,
+                    MessageBoxResult.OK,
+                    MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign
+                    );
+            }
         }
 
         private void button_Login_CustomersClub_Click(object sender, RoutedEventArgs e)
