@@ -20,7 +20,7 @@ namespace MMK_OSD_CashierApp
     public partial class MainWindow : Window
     {
         // App DB.
-        public DB db = new DB();
+        public static DB db = new DB();
 
         public MainWindow()
         {

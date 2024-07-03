@@ -64,7 +64,8 @@
                 <TextBlock Margin="5" FontSize="20">
                     کد ملی:
                 </TextBlock>
-                <TextBox Margin="5" FontSize="20" Padding="3" TextAlignment="Center">
+                <TextBox x:Name="TextBox_Personnel_Username"
+                    Margin="5" FontSize="20" Padding="3" TextAlignment="Center">
                     
                 </TextBox>
             </StackPanel>
@@ -75,7 +76,9 @@
                 <TextBlock Margin="5" FontSize="20">
                     کلمه عبور:
                 </TextBlock>
-                <PasswordBox Margin="5" FontSize="20" Padding="3" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+                <PasswordBox 
+                    x:Name="PasswordBox_Personnel_Username"
+                    Margin="5" FontSize="20" Padding="3" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
                     
                 </PasswordBox>
             </StackPanel>
@@ -89,7 +92,8 @@
                 </Grid.RowDefinitions>
                 
                 <!-- Login button -->
-                <Button Grid.Row="1" Margin="5px" FontSize="20" Cursor="Hand" Background="Transparent">
+                <Button x:Name="Button_Login_Personnel" Grid.Row="1" Margin="5px" FontSize="20" Cursor="Hand" Background="Transparent"
+                        Click="Button_Login_Personnel_Click">
                     <Button.Resources>
                         <Style TargetType="Border">
                             <Setter Property="CornerRadius" Value="17"/>

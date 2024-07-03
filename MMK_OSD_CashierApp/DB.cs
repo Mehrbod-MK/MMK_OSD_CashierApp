@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,6 +23,10 @@ namespace MMK_OSD_CashierApp
         public const string DB_DEFAULT_APP_SCHEMA = "mmk_osd_cashierapp";
         public const string DB_ROOT_USER = "root";
         public const string DB_DEFAULT_USERNAME = "MehrbodMK";
+
+        public const string DB_TABLE_NAME_USERS = @"mmk_osd_cashierapp.users";
+
+        public const string DB_QUERY_ERROR_USER_BAD_CREDENTIALS = @"DB_QUERY_ERROR_USER_BAD_CREDENTIALS";
 
         #endregion
 
@@ -143,7 +148,7 @@ namespace MMK_OSD_CashierApp
             {
                 MySqlDataReader? resultReader = null;
 
-                lastConnection = new MySqlConnection(get_ConnectionString());
+                lastConnection = new MySqlConnection(get_RecentConnectionString());
 
                 // using (var connection = new MySqlConnection(get_RecentConnectionString()))
                 // {
@@ -215,6 +220,27 @@ namespace MMK_OSD_CashierApp
             finally
             {
                 Marshal.FreeBSTR(bstr);
+            }
+        }
+
+        public static string Hash(string input)
+            => Convert.ToHexString(SHA1.HashData(Encoding.UTF8.GetBytes(input)));
+
+        public static object _THROW_DBRESULT(DBResult dBResult)
+        {
+            try
+            {
+                if (dBResult.returnValue == null)
+                    throw new NullReferenceException("خطای بازگشت نتیجه از پایگاه داده. لطفاً با طراح سامانه تماس حاصل فرمایید.");
+
+                if (dBResult.result == DBResultEnum.DB_ERROR)
+                    throw (Exception)dBResult.returnValue;
+
+                return (object)dBResult.returnValue;
+            }
+            catch(Exception ex) 
+            {
+                throw;
             }
         }
 
