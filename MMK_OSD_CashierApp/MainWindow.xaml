@@ -75,7 +75,8 @@
             
         </Button>
 
-        <Button Margin="7px" Grid.Column="1" Grid.Row="1">
+        <Button x:Name="button_Login_Personnel" Margin="7px" Grid.Column="1" Grid.Row="1"
+                Click="button_Login_Personnel_Click">
             <!-- Add round corners to button -->
             <Button.Resources>
                 <Style TargetType="Border">

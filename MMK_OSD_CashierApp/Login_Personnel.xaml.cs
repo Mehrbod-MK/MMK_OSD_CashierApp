@@ -35,15 +35,13 @@ namespace MMK_OSD_CashierApp
         {
             if (!loginSuccessful)
             {
-                MessageBubble_View msg_AskQuit = new MessageBubble_View(
+                if (
+                    MessageBox.Show("آیا مایل به لغو ورود به برنامه هستید؟",
                     "هشدار",
-                    "آیا مطمئن هستید که قصد ورود ندارید؟",
-                    null,
-                    MessageBoxImage.Exclamation,
-                    msgBubble_Buttons: MessageBoxButton.YesNo
-                    );
-                
-                if(msg_AskQuit.DisplayMessageBubble().dialogResult == "Yes")
+                    MessageBoxButton.YesNo, MessageBoxImage.Warning,
+                    MessageBoxResult.No,
+                    MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign
+                    ) == MessageBoxResult.Yes)
                 {
                     e.Cancel = false;
                     ref_MainWindow.Show();

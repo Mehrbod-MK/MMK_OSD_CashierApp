@@ -49,6 +49,11 @@ namespace MMK_OSD_CashierApp
 
         private void button_Login_CustomersClub_Click(object sender, RoutedEventArgs e)
         {
+            
+        }
+
+        private void button_Login_Personnel_Click(object sender, RoutedEventArgs e)
+        {
             BackgroundWorker worker = new BackgroundWorker()
             {
                 WorkerReportsProgress = false,
@@ -70,7 +75,7 @@ namespace MMK_OSD_CashierApp
 
                 // Check connection with ROOT DB.
                 var dbResult_TestRoot = db.sql_TestRootConnection().Result;
-                if(dbResult_TestRoot.result != DB.DBResultEnum.DB_OK)
+                if (dbResult_TestRoot.result != DB.DBResultEnum.DB_OK)
                 {
                     Application.Current.Dispatcher.Invoke(() => workerVM.ProgressColor = new SolidColorBrush(Color.FromRgb(255, 255, 0)));
                     workerVM.ProgressState = "پایگاه داده با رمز Root محافظت شده است.";
@@ -105,7 +110,7 @@ namespace MMK_OSD_CashierApp
                             workerVM.ProgressState = "بررسی رمز...";
 
                             // Test the connection again.
-                            if(msgBubble_Result.password != null)
+                            if (msgBubble_Result.password != null)
                                 dbResult_TestRoot = db.sql_TestRootConnection(DB.SecureStringToString(msgBubble_Result.password)).Result;
 
                             // If incorrect again, continue loop.
