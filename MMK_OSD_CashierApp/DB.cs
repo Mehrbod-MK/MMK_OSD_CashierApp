@@ -56,8 +56,20 @@ namespace MMK_OSD_CashierApp
             DB_NOTIFY_NO_DBADMIN_USER,
         }
 
-        #endregion
+        [Flags]
+        public enum DB_Roles : uint
+        {
+            DB_ROLE_Unknown = 0,
 
+            DB_ROLE_Customer =      1 << 0,
+            DB_ROLE_Cashier =       1 << 1,
+            DB_ROLE_FundManager =   1 << 2,
+            DB_ROLE_StoreManager =  1 << 3,
+            DB_ROLE_DBA =           1 << 4,
+        }
+
+        #endregion
+        
         #region DB_Public_Structures
 
         public class DBResult

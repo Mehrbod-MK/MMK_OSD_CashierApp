@@ -91,8 +91,12 @@ namespace MMK_OSD_CashierApp
                     // If no user found, set error state.
                     MainWindow.db.sql_End_Query(dataReader_Personnel).Wait();
                     e.Result = DB.DB_QUERY_ERROR_USER_BAD_CREDENTIALS;
+
+                    return;
                 }
 
+                // Login was successful, go to personnel's profile.
+                
             };
 
             worker_LoginPersonnel.RunWorkerCompleted += (sender, e) =>
