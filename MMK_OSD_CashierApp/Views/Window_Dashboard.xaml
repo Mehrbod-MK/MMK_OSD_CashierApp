@@ -11,7 +11,7 @@
     <StackPanel x:Name="StackPanel_Dashboard">
 
         <!-- Main Menu Controls -->
-        <Ribbon>
+        <Ribbon SelectedIndex="0">
             <!-- Main application menu -->
             <Ribbon.ApplicationMenu>
                 <RibbonApplicationMenu>
