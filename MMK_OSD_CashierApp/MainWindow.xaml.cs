@@ -121,7 +121,7 @@ namespace MMK_OSD_CashierApp
 
                             // Test the connection again.
                             if (msgBubble_Result.password != null)
-                                dbResult_TestRoot = db.sql_TestRootConnection(DB.SecureStringToString(msgBubble_Result.password)).Result;
+                                dbResult_TestRoot = db.sql_TestRootConnection(msgBubble_Result.password).Result;
 
                             // If incorrect again, continue loop.
                             if (dbResult_TestRoot.result == DB.DBResultEnum.DB_ERROR)

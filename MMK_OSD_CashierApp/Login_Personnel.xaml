@@ -13,6 +13,8 @@
         x:Name="Window_Login_Personnel"
         
         Closing="Window_Login_Personnel_Closing"
+        
+        KeyDown="Window_Login_Personnel_KeyDown"
         >
     <Window.Background>
         <ImageBrush ImageSource="./Resources/img_Bkg_LoginPersonnel.jpg" 
@@ -65,6 +67,7 @@
                     کد ملی:
                 </TextBlock>
                 <TextBox x:Name="TextBox_Personnel_Username"
+                    KeyDown="TextBox_Personnel_KeyDown"
                     Margin="5" FontSize="20" Padding="3" TextAlignment="Center">
                     
                 </TextBox>
@@ -78,6 +81,7 @@
                 </TextBlock>
                 <PasswordBox 
                     x:Name="PasswordBox_Personnel_Username"
+                    KeyDown="TextBox_Personnel_KeyDown"
                     Margin="5" FontSize="20" Padding="3" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
                     
                 </PasswordBox>

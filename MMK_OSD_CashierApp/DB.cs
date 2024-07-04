@@ -26,6 +26,7 @@ namespace MMK_OSD_CashierApp
 
         public const string DB_TABLE_NAME_USERS = @"mmk_osd_cashierapp.users";
 
+        public const string DB_QUERY_USER_OK = @"DB_QUERY_USER_OK";
         public const string DB_QUERY_ERROR_USER_BAD_CREDENTIALS = @"DB_QUERY_ERROR_USER_BAD_CREDENTIALS";
 
         #endregion
@@ -93,11 +94,12 @@ namespace MMK_OSD_CashierApp
         /// Tests a password-less connection to MySQL's ROOT user for application to use.
         /// </summary>
         /// <returns>This task returns a <see cref="DBResult"/> structure.</returns>
-        public async Task<DBResult> sql_TestRootConnection(string? knownRootPassword = null)
+        public async Task<DBResult> sql_TestRootConnection(SecureString? knownRootPassword = null)
         {
             try
             {
-                using (var connection = new MySqlConnection(get_ConnectionString(isRootConnection: true)))
+                using (var connection = new MySqlConnection(get_ConnectionString(isRootConnection: true, 
+                    rootPassword: knownRootPassword)))
                 {
                     connection.ConfigureAwait(false);
                     await connection.OpenAsync();
@@ -331,7 +333,7 @@ namespace MMK_OSD_CashierApp
                     return
                        $"SERVER={server};" +
                        $"PORT={port};" +
-                       $"UID={DB_ROOT_USER}" +
+                       $"UID={DB_ROOT_USER};" +
                        $"PASSWORD={SecureStringToString(rootPassword)}";
                 }
             }

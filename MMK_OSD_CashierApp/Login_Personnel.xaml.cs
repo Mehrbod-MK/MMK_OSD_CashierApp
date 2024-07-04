@@ -96,7 +96,8 @@ namespace MMK_OSD_CashierApp
                 }
 
                 // Login was successful, go to personnel's profile.
-                
+                loginSuccessful = true;
+                e.Result = DB.DB_QUERY_USER_OK;
             };
 
             worker_LoginPersonnel.RunWorkerCompleted += (sender, e) =>
@@ -118,6 +119,7 @@ namespace MMK_OSD_CashierApp
                     return;
                 }
 
+                // Username/Password was incorrect.
                 if((string)e.Result == DB.DB_QUERY_ERROR_USER_BAD_CREDENTIALS)
                 {
                     MessageBox.Show(
@@ -131,10 +133,30 @@ namespace MMK_OSD_CashierApp
 
                     return;
                 }
+
+                // Successful Login.
+                else if((string)e.Result == DB.DB_QUERY_USER_OK)
+                {
+
+                }
             };
 
             Dialog_Worker worker = new Dialog_Worker(worker_LoginPersonnel, wvm_LoginPersonnel);
             worker.ShowDialog();
+        }
+
+        private void TextBox_Personnel_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter)
+            {
+                Button_Login_Personnel_Click(sender, new RoutedEventArgs());
+            }
+        }
+
+        private void Window_Login_Personnel_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+                this.Close();
         }
     }
 }
