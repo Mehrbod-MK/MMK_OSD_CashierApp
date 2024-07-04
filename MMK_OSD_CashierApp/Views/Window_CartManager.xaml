@@ -29,16 +29,19 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
         <!-- Main Toolbar Ribbon -->
-        <Ribbon Grid.ColumnSpan="2" Title="صندوقداری فروشگاه" ApplicationMenu="{x:Null}">
+        <Ribbon Grid.ColumnSpan="3" Title="صندوقداری فروشگاه" ApplicationMenu="{x:Null}">
             <RibbonTab Header="پنل مدیریت سبد خرید">
                 <RibbonGroup Header="مدیریت کالاها">
                     <RibbonButton Label="اضافه کردن کالا به سبد خرید"></RibbonButton>
                     <RibbonButton Label="حذف کالاهای انتخاب شده از سبد خرید"></RibbonButton>
                     <RibbonButton Label="خالی کردن سبد"></RibbonButton>
                 </RibbonGroup>
+
+                <RibbonSeparator/>
 
                 <RibbonGroup Header="مشتری">
                     <RibbonButton Label="ثبت نام مشتری جدید"></RibbonButton>
@@ -58,7 +61,7 @@
         </Ribbon>
 
         <!-- Enter Product ID -->
-        <GroupBox Margin="3" Grid.Column="0" Grid.Row="1" Header="جستجوی کالا/مشتری" BorderThickness="2" BorderBrush="Blue" Foreground="Blue">
+        <GroupBox Margin="3" Grid.Column="0" Grid.Row="1" Header="جستجوی کالا/مشتری" BorderThickness="3">
             <StackPanel VerticalAlignment="Center" Margin="5" Orientation="Vertical">
                 <TextBlock Foreground="Black" FontSize="17" FontWeight="ExtraBold">کد کالا:</TextBlock>
                 <TextBox Foreground="Black" FontSize="17" TextAlignment="Center"/>
@@ -66,10 +69,88 @@
                 <TextBox Foreground="Black" FontSize="17" TextAlignment="Center"/>
             </StackPanel>
         </GroupBox>
-
-        <GroupBox Margin="3" Grid.Column="1" Grid.Row="1" Header="مشخصات کالای انتخاب شده" BorderThickness="2" BorderBrush="Green" Foreground="Green">
             
+        <!-- Product Details -->
+        <GroupBox Grid.ColumnSpan="2"  Margin="3" Grid.Column="1" Grid.Row="1" Header="مشخصات کالای انتخاب شده" BorderThickness="3">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="128"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Product Thumbnail -->
+                <Image Margin="7" Grid.Column="2" Source="../Resources/productIcon.png"/>
+
+                <!--- Product Properties -->
+                <StackPanel Orientation="Vertical">
+                    <TextBlock FontSize="18">نام کالا:</TextBlock>
+                    <TextBlock FontSize="18">قیمت:</TextBlock>
+                    <TextBlock FontSize="18">شرکت:</TextBlock>
+                    <TextBlock FontSize="18">تاریخ ثبت:</TextBlock>
+                    <TextBlock FontSize="18">در انبار:</TextBlock>
+                </StackPanel>
+
+                <!--- Product Values -->
+                <StackPanel Grid.Column="1" Orientation="Vertical">
+                    <TextBlock ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}" FontSize="18">--</TextBlock>
+                    <TextBlock FontSize="18">--</TextBlock>
+                    <TextBlock FontSize="18">--</TextBlock>
+                    <TextBlock FontSize="18">--</TextBlock>
+                    <TextBlock FontSize="18">--</TextBlock>
+                </StackPanel>
+            </Grid>
         </GroupBox>
+
+        <!-- List of products in cart -->
+        <GroupBox Grid.ColumnSpan="3" Margin="2" Grid.Column="0" Grid.Row="2" Header="سبد خرید" BorderThickness="3">
+            <ListView FontSize="15">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Width="140" Header="شماره کالا"/>
+                        <GridViewColumn Width="140" Header="نام کالا"/>
+                        <GridViewColumn Width="140" Header="قیمت"/>
+                        <GridViewColumn Width="140" Header="شرکت عرضه‌کننده"/>
+                        <GridViewColumn Width="140" Header="تاریخ ثبت"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </GroupBox>
+
+        <!-- Total Debt -->
+        <Viewbox Grid.Column="0" Grid.Row="3">
+            <StackPanel>
+                <TextBlock Foreground="DarkRed" FontSize="27">قیمت کل:</TextBlock>
+                <TextBlock Foreground="DarkRed" FontSize="30">00000000000</TextBlock>
+            </StackPanel>
+        </Viewbox>
+
+        <!-- Total Discount -->
+        <Viewbox Grid.Column="1" Grid.Row="3">
+            <StackPanel>
+                <TextBlock Foreground="Green" FontSize="27">تخفیف درصدی:</TextBlock>
+                <TextBlock Foreground="Green" FontSize="30">00000000000</TextBlock>
+            </StackPanel>
+        </Viewbox>
+
+        <!-- Total Price -->
+        <Viewbox Grid.Column="2" Grid.Row="3">
+            <StackPanel>
+                <TextBlock Foreground="Blue" FontSize="27">قابل پرداخت:</TextBlock>
+                <TextBlock Foreground="Blue" FontSize="30">00000000000</TextBlock>
+            </StackPanel>
+        </Viewbox>
+
+        <StatusBar FontSize="17" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3" BorderBrush="Black" BorderThickness="1">
+            <TextBlock>
+                از دکمه Enter بعد از وارد کردن کد کالا برای اضافه کردن آن به سبد استفاده کنید.
+            </TextBlock>
+            <Separator/>
+            <TextBlock>
+                تعداد اقلام انتخابی:  ?
+            </TextBlock>
+        </StatusBar>
+        
     </Grid>
     
 </Window>

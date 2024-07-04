@@ -28,6 +28,7 @@
     <None Remove="Resources\Menu_Icons\menu_Icon_Tips_Large.png" />
     <None Remove="Resources\Menu_Icons\menu_MgrCustCart_Load.png" />
     <None Remove="Resources\Menu_Icons\menu_MgrCustCart_New.png" />
+    <None Remove="Resources\productIcon.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,6 +50,7 @@
     <Resource Include="Resources\Menu_Icons\menu_Icon_Tips_Large.png" />
     <Resource Include="Resources\Menu_Icons\menu_MgrCustCart_Load.png" />
     <Resource Include="Resources\Menu_Icons\menu_MgrCustCart_New.png" />
+    <Resource Include="Resources\productIcon.png" />
   </ItemGroup>
 
   <ItemGroup>
