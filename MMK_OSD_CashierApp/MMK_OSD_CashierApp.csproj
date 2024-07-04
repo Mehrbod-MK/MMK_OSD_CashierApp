@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\bkg_ShoppingPattern.png" />
     <None Remove="Resources\cashier.png" />
     <None Remove="Resources\gif_Loading.gif" />
     <None Remove="Resources\ico_MsgBox_Info.png" />
@@ -30,6 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\bkg_ShoppingPattern.png" />
     <Resource Include="Resources\cashier.png" />
     <Resource Include="Resources\gif_Loading.gif" />
     <Resource Include="Resources\ico_MsgBox_Info.png" />
