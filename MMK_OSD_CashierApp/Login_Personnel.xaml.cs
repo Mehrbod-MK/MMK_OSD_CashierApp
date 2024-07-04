@@ -53,7 +53,11 @@ namespace MMK_OSD_CashierApp
                 {
                     e.Cancel = true;
                 }
-
+            }
+            else
+            {
+                e.Cancel = false;
+                ref_MainWindow.Show();
             }
         }
 
@@ -137,7 +141,10 @@ namespace MMK_OSD_CashierApp
                 // Successful Login.
                 else if((string)e.Result == DB.DB_QUERY_USER_OK)
                 {
+                    this.Hide();
 
+                    Views.Window_Dashboard dashboard = new();
+                    dashboard.Show();
                 }
             };
 

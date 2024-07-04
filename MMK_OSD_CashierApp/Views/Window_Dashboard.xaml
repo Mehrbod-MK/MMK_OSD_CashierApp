@@ -1,0 +1,54 @@
+﻿<Window x:Class="MMK_OSD_CashierApp.Views.Window_Dashboard"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MMK_OSD_CashierApp.Views"
+        mc:Ignorable="d"
+        Title="پنل کاربری - %s %s" Height="450" Width="800"
+        FlowDirection="RightToLeft"
+        WindowStartupLocation="CenterScreen">
+    <StackPanel x:Name="StackPanel_Dashboard">
+
+        <!-- Main Menu Controls -->
+        <Ribbon>
+            <!-- Main application menu -->
+            <Ribbon.ApplicationMenu>
+                <RibbonApplicationMenu>
+                    <!-- Auxillary Pane -->
+                    <RibbonApplicationMenu.AuxiliaryPaneContent>
+                        <StackPanel Margin="7px" Orientation="Vertical">
+                            <TextBlock FontSize="17">کد ملی:</TextBlock>
+                            <TextBlock FontSize="17">نام:</TextBlock>
+                            <TextBlock FontSize="17">نام خانوادگی:</TextBlock>
+                            <TextBlock FontSize="17">آخرین زمان ورود:</TextBlock>
+                        </StackPanel>
+                    </RibbonApplicationMenu.AuxiliaryPaneContent>
+                    <RibbonApplicationMenuItem Header="راهنما" ImageSource="../Resources/Menu_Icons/menu_Icon_Tips_Large.png"/>
+                    <RibbonApplicationMenuItem Header="تنظیمات" ImageSource="../Resources/Menu_Icons/menu_Icon_Settings.png"/>
+                </RibbonApplicationMenu>
+            </Ribbon.ApplicationMenu>
+
+            <!-- Ribbon Tab #1: Cashier -->
+            <RibbonTab Header="صندوقداری">
+                <!-- Cashier -> Customer Cart Group  -->
+                <RibbonGroup Header="سبد خرید مشتری">
+                    <RibbonButton SmallImageSource="../Resources/Menu_Icons/menu_MgrCustCart_New.png" LargeImageSource="../Resources/Menu_Icons/menu_MgrCustCart_New.png" Label="ایجاد سبد خرید جدید"/>
+                    <RibbonButton SmallImageSource="../Resources/Menu_Icons/menu_MgrCustCart_Load.png" LargeImageSource="../Resources/Menu_Icons/menu_MgrCustCart_Load.png" Label="بارگزاری سبد خرید از فایل"/>
+                </RibbonGroup>
+
+                <!-- Cashier -> Product Management -->
+                <RibbonGroup Header="کالاهای فروشگاه">
+                    <RibbonButton LargeImageSource="../Resources/Menu_Icons/menu_Icon_SearchProduct.png" Label="جستجوی کالا" />
+                    <RibbonButton LargeImageSource="../Resources/Menu_Icons/menu_Icon_ReportProduct.png" Label="گزارش خرابی یا مشکل در کالا" />
+                </RibbonGroup>
+
+                <!-- Cashier -> Reports -->
+                <RibbonGroup Header="گزارشات">
+                    <RibbonButton LargeImageSource="../Resources/Menu_Icons/menu_Icon_Reports.png" Label="گزارشات" />
+                </RibbonGroup>
+            </RibbonTab>
+        </Ribbon>
+
+    </StackPanel>
+</Window>
