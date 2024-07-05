@@ -39,13 +39,9 @@ namespace MMK_OSD_CashierApp.Views
                 return;
 
             Product? foundProduct = null;
-            uint productID = 0;
 
-            try
-            {
-                productID = Convert.ToUInt32(TextBox_Enter_ProductCode.Text);
-            }
-            catch(Exception) { return; }
+            if (!uint.TryParse(TextBox_Enter_ProductCode.Text, out uint productID))
+                return;
 
             Task.Run(async () =>
             {
@@ -56,8 +52,8 @@ namespace MMK_OSD_CashierApp.Views
             {
                 //if(foundProduct != null)
                 //{
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
+                Application.Current.Dispatcher.Invoke(() =>
+            {
                         vm_Dashboard.FoundProduct = foundProduct;
                     });
                 //}
