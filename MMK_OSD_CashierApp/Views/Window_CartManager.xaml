@@ -20,6 +20,10 @@
     <Window.Resources>
         <!-- Value Converters -->
         <viewmodel:FromDateTime_ToPersianLongDateString x:Key="Converter_FromDateTime_ToPersianLongDateString"/>
+        <viewmodel:FromString_To_Bitmap x:Key="Converter_FromString_ToBitmap"/>
+        
+        <!-- Fallback Values -->
+        <BitmapImage x:Key="Fallback_Image_ProductThumbnail" UriSource="../Resources/productIcon.png"/>
     </Window.Resources>
 
     <Grid>
@@ -82,11 +86,13 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100"/>
                     <ColumnDefinition/>
-                    <ColumnDefinition Width="128"/>
+                    <ColumnDefinition Width="0.5*"/>
                 </Grid.ColumnDefinitions>
 
                 <!-- Product Thumbnail -->
-                <Image Margin="7" Grid.Column="2" Source="../Resources/productIcon.png"/>
+                <Image Margin="7" Grid.Column="2" Source="{Binding FoundProduct.ThumbImagePath, Converter={StaticResource Converter_FromString_ToBitmap}, UpdateSourceTrigger=PropertyChanged, FallbackValue=../Resources/productIcon.png}">
+                    
+                </Image>
 
                 <!--- Product Properties -->
                 <StackPanel Orientation="Vertical">

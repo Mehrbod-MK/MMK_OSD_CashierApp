@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using MMK_OSD_CashierApp.Models;
 using MySql.Data;
 using MySql.Data.MySqlClient;
@@ -211,15 +213,18 @@ namespace MMK_OSD_CashierApp
             }
         }
 
-        public async Task<DBResult> sql_End_Query(MySqlDataReader dataReaderToClose)
+        public async Task<DBResult> sql_End_Query(MySqlDataReader? dataReaderToClose)
         {
             try
             {
-                dataReaderToClose.ConfigureAwait(false);
+                dataReaderToClose?.ConfigureAwait(false);
 
                 // Close and dispose query.
-                await dataReaderToClose.CloseAsync();
-                await dataReaderToClose.DisposeAsync();
+                if(dataReaderToClose != null)
+                {
+                    await dataReaderToClose.CloseAsync();
+                    await dataReaderToClose.DisposeAsync();
+                }
 
                 // Close and dispoase recent connection.
                 await this.sql_End_Connection(this.lastConnection);
@@ -244,12 +249,12 @@ namespace MMK_OSD_CashierApp
         {
             try
             {
-                MySqlDataReader dbResult_QueryProduct = (MySqlDataReader)
-                _THROW_DBRESULT(await sql_Execute_Query($"SELECT * FROM  {schema}.{DB_TABLE_NAME_PRODUCTS} WHERE ProductID = {productCode};"));
+                MySqlDataReader? dbResult_QueryProduct = 
+                _THROW_DBRESULT<MySqlDataReader?>(await sql_Execute_Query($"SELECT * FROM  {schema}.{DB_TABLE_NAME_PRODUCTS} WHERE ProductID = {productCode};"));
 
                 Product? product = null;
 
-                if (dbResult_QueryProduct.HasRows)
+                if (dbResult_QueryProduct != null && dbResult_QueryProduct.HasRows)
                 {
                     await dbResult_QueryProduct.ReadAsync();
                     product = new Product()
@@ -261,9 +266,20 @@ namespace MMK_OSD_CashierApp
                         DateTimeSubmitted = dbResult_QueryProduct.GetDateTime("DateSubmitted"),
                         Quantity = (uint)dbResult_QueryProduct["Quantity"],
                     };
+
+                    // Set thumbnail image.
+                    string? thumbImagePath = ConvertFromDBVal<string?>(dbResult_QueryProduct["ThumbImagePath"]);
+                    if(thumbImagePath != null)
+                    {
+                        product.ThumbImagePath = Path.Combine(Environment.CurrentDirectory, thumbImagePath);
+                    }
+                    else
+                    {
+                        product.ThumbImagePath = "../Resources/productIcon.png";
+                    }
                 }
 
-                // await sql_End_Query(dbResult_QueryProduct);
+                await sql_End_Query(dbResult_QueryProduct);
 
                 return new DBResult()
                 {
@@ -298,20 +314,20 @@ namespace MMK_OSD_CashierApp
         public static string Hash(string input)
             => Convert.ToHexString(SHA1.HashData(Encoding.UTF8.GetBytes(input)));
 
-        public static object? _THROW_DBRESULT(DBResult dBResult)
+        public static T? _THROW_DBRESULT<T>(DBResult dBResult)
         {
             try
             {
                 if (dBResult.returnValue == null)
-                    return null;
+                    return default;
                     // throw new NullReferenceException("خطای بازگشت نتیجه از پایگاه داده. لطفاً با طراح سامانه تماس حاصل فرمایید.");
 
                 if (dBResult.result == DBResultEnum.DB_ERROR)
                     throw (Exception)dBResult.returnValue;
 
-                return dBResult.returnValue;
+                return (T)dBResult.returnValue;
             }
-            catch(Exception ex) 
+            catch(Exception) 
             {
                 throw;
             }

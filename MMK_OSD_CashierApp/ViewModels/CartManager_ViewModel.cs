@@ -1,6 +1,7 @@
 ﻿using MMK_OSD_CashierApp.Models;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Media.Imaging;
 
 namespace MMK_OSD_CashierApp.ViewModels
 {
@@ -63,6 +65,21 @@ namespace MMK_OSD_CashierApp.ViewModels
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new InvalidOperationException("امکان تبدیل رشته به تاریخ در این ماژول وجود ندارد.");
+        }
+    }
+
+    [ValueConversion(typeof(string), typeof(BitmapSource))]
+    public class FromString_To_Bitmap : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            BitmapImage bmpImg = new BitmapImage(new Uri((string)value, UriKind.RelativeOrAbsolute));
+            return bmpImg;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException("امکان تبدیل رشته به تصویر بیت‌مپ وجود ندارد.");
         }
     }
 }

@@ -21,14 +21,14 @@ namespace MMK_OSD_CashierApp.ViewModels
             cmd_CreateNewCart = new RelayCommand(Order_CreateNewCart, Allow_CreateNewCart);
         }
 
-        public void Order_CreateNewCart(object parameter)
+        public void Order_CreateNewCart(object? parameter)
         {
             (parameter as Window)?.Hide();
 
             Window_CartManager wnd_CartManager = new Window_CartManager(new CartManager_ViewModel());
             wnd_CartManager.ShowDialog();
         }
-        public bool Allow_CreateNewCart(object parameter)
+        public bool Allow_CreateNewCart(object? parameter)
         {
             return true;
         }

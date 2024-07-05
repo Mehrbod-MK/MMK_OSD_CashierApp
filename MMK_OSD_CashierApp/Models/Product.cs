@@ -18,6 +18,7 @@ namespace MMK_OSD_CashierApp.Models
         private string? vendor = null;
         private DateTime dateTimeSubmitted;
         private uint quantity;
+        private string? thumbImagePath = null;
 
         public uint ProductID { get => productID; set => SetProperty(ref productID, value); }
         public string ProductName { get => productName; set => SetProperty(ref productName, value); }
@@ -25,15 +26,6 @@ namespace MMK_OSD_CashierApp.Models
         public string? Vendor { get => vendor; set => SetProperty(ref vendor, value); }
         public DateTime DateTimeSubmitted { get => dateTimeSubmitted; set => SetProperty(ref dateTimeSubmitted, value); }
         public uint Quantity { get => quantity; set => SetProperty(ref quantity, value); }
-
-        public void ForceNotifyChanges()
-        {
-            SetProperty(ref productID, productID, "ProductID", forceUpdate: true);
-            SetProperty(ref productName, productName, "ProductName", forceUpdate: true);
-            SetProperty(ref price, price, "Price", forceUpdate: true);
-            SetProperty(ref vendor, vendor, "Vendor", forceUpdate: true);
-            SetProperty(ref dateTimeSubmitted, dateTimeSubmitted, "DateTimeSubmitted", forceUpdate: true);
-            SetProperty(ref quantity, quantity, "Quantity", forceUpdate: true);
-        }
+        public string? ThumbImagePath { get => thumbImagePath; set => SetProperty(ref thumbImagePath, value); }
     }
 }

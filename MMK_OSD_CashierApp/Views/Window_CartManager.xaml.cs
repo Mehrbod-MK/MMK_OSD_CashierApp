@@ -21,7 +21,7 @@ namespace MMK_OSD_CashierApp.Views
     /// </summary>
     public partial class Window_CartManager : Window
     {
-        private Task? task_UpdateProduct = null;
+        // private Task? task_UpdateProduct = null;
         private CartManager_ViewModel? vm_Dashboard = null;
 
         public Window_CartManager(CartManager_ViewModel vm_Dashboard)
@@ -45,37 +45,15 @@ namespace MMK_OSD_CashierApp.Views
 
             Task.Run(async () =>
             {
-                foundProduct = (Product?)DB._THROW_DBRESULT(await MainWindow.db.db_Get_Product(
-                    productID
-                    ));
-            }).ContinueWith((_) =>
+                foundProduct = (Product?)DB._THROW_DBRESULT
+                <Product?>(await MainWindow.db.db_Get_Product(productID));
+            }).ContinueWith((x) =>
             {
-                //if(foundProduct != null)
-                //{
                 Application.Current.Dispatcher.Invoke(() =>
-            {
-                        vm_Dashboard.FoundProduct = foundProduct;
-                    });
-                //}
+                {
+                    vm_Dashboard.FoundProduct = foundProduct;
+                });
             });
-
-            /*if (task_UpdateProduct?.Status == TaskStatus.Running)
-            {
-                task_UpdateProduct.Dispose();
-                task_UpdateProduct = null;
-            }
-
-            try
-            {
-                task_UpdateProduct = new Task(async () => await vm_Dashboard.FindProduct_AfterTime
-                (Application.Current.Dispatcher.Invoke(() => Convert.ToUInt32(TextBox_Enter_ProductCode.Text)), TimeSpan.FromSeconds(3)));
-
-                task_UpdateProduct.Start();
-            }
-            catch(Exception)
-            {
-
-            }*/
         }
     }
 }

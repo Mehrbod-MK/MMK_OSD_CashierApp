@@ -89,8 +89,9 @@ namespace MMK_OSD_CashierApp
                     $"SELECT * FROM {DB.DB_TABLE_NAME_USERS} WHERE NationalID = \'{username}\' AND LoginPassword = \'{password}\'"
                     ).Result;
                 
-                MySqlDataReader dataReader_Personnel = (MySqlDataReader)DB._THROW_DBRESULT(db_GetUserQuery);
-                if(!dataReader_Personnel.HasRows)
+                MySqlDataReader? dataReader_Personnel = DB._THROW_DBRESULT
+                <MySqlDataReader?>(db_GetUserQuery);
+                if(dataReader_Personnel != null && !dataReader_Personnel.HasRows)
                 {
                     // If no user found, set error state.
                     MainWindow.db.sql_End_Query(dataReader_Personnel).Wait();
