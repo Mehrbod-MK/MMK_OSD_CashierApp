@@ -9,24 +9,18 @@ namespace MMK_OSD_CashierApp.ViewModels
 {
     public class RelayCommand : ICommand
     {
-        private readonly Action<object> _executeAction;
-        private readonly Func<object, bool> _canExecuteAction;
+        private readonly Action<object?> _executeAction;
+        private readonly Func<object?, bool> _canExecuteAction;
 
-        public RelayCommand(Action<object> executeAction, Func<object, bool> canExecuteAction)
+        public RelayCommand(Action<object?> executeAction, Func<object?, bool> canExecuteAction)
         {
             _executeAction = executeAction;
             _canExecuteAction = canExecuteAction;
         }
 
-        public bool CanExecute(object? parameter)
-        {
-            throw new NotImplementedException();
-        }
+        public bool CanExecute(object? parameter) => _canExecuteAction?.Invoke(parameter) ?? true;
 
-        public void Execute(object? parameter)
-        {
-            throw new NotImplementedException();
-        }
+        public void Execute(object? parameter) => _executeAction(parameter);
 
         public event EventHandler? CanExecuteChanged;
 

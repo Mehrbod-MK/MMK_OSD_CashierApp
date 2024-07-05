@@ -99,11 +99,11 @@
 
                 <!--- Product Values -->
                 <StackPanel Grid.Column="1" Orientation="Vertical">
-                    <TextBlock Text="{Binding FoundProduct.ProductName, FallbackValue=جستجو نتیجه‌ای در بر نداشت}" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}" FontSize="18">--</TextBlock>
-                    <TextBlock Text="{Binding Path=FoundProduct.Price, FallbackValue=نامشخص}" FontSize="18">--</TextBlock>
-                    <TextBlock Text="{Binding Path=FoundProduct.Vendor, FallbackValue=نامشخص}" FontSize="18">--</TextBlock>
-                    <TextBlock Text="{Binding Path=FoundProduct.DateTimeSubmitted, FallbackValue=نامشخص, Converter={StaticResource Converter_FromDateTime_ToPersianLongDateString}}" FontSize="18">--</TextBlock>
-                    <TextBlock Text="{Binding Path=FoundProduct.Quantity, FallbackValue=نامشخص}" FontSize="18">--</TextBlock>
+                    <TextBlock Text="{Binding FoundProduct.ProductName, UpdateSourceTrigger=PropertyChanged, FallbackValue=جستجو نتیجه‌ای در بر نداشت}" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}" FontSize="18"/>
+                    <TextBlock Text="{Binding FoundProduct.Price, UpdateSourceTrigger=PropertyChanged, FallbackValue=نامشخص}" FontSize="18"/>
+                    <TextBlock Text="{Binding FoundProduct.Vendor, UpdateSourceTrigger=PropertyChanged, FallbackValue=نامشخص}" FontSize="18"/>
+                    <TextBlock Text="{Binding FoundProduct.DateTimeSubmitted, FallbackValue=نامشخص, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Converter_FromDateTime_ToPersianLongDateString}}" FontSize="18"/>
+                    <TextBlock Text="{Binding FoundProduct.Quantity, FallbackValue=نامشخص, UpdateSourceTrigger=PropertyChanged}" FontSize="18"/>
                 </StackPanel>
             </Grid>
         </GroupBox>

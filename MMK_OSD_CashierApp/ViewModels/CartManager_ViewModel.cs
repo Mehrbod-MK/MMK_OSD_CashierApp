@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Windows;
 using System.Windows.Data;
 
 namespace MMK_OSD_CashierApp.ViewModels
@@ -17,17 +18,7 @@ namespace MMK_OSD_CashierApp.ViewModels
         /// <summary>
         /// Found product, entered by its code.
         /// </summary>
-        public Product? FoundProduct { get => foundProduct; private set => SetProperty(ref foundProduct, value); }
-
-        public async Task FindProduct_AfterTime(uint productCode, TimeSpan delay)
-        {
-            this.foundProduct = null;
-
-            await Task.Delay(delay);
-
-            this.FoundProduct = (Product)
-                DB._THROW_DBRESULT(await MainWindow.db.db_Get_Product(productCode));
-        }
+        public Product? FoundProduct { get => foundProduct; set { SetProperty(ref foundProduct, value); } }
     }
 
     [ValueConversion(typeof(DateTime), typeof(string))]

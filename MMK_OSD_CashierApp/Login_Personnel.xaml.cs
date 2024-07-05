@@ -143,7 +143,7 @@ namespace MMK_OSD_CashierApp
                 {
                     this.Hide();
 
-                    Views.Window_Dashboard dashboard = new();
+                    Views.Window_Dashboard dashboard = new(new Dashboard_ViewModel());
                     dashboard.Show();
                 }
             };

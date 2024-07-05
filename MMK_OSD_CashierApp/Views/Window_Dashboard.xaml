@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MMK_OSD_CashierApp.Views"
         mc:Ignorable="d"
+        x:Name="Window_Dashboard_View"
         Title="پنل کاربری - %s %s" Height="450" Width="800"
         FlowDirection="RightToLeft"
         WindowStartupLocation="CenterScreen">
@@ -33,8 +34,8 @@
             <RibbonTab Header="صندوقداری">
                 <!-- Cashier -> Customer Cart Group  -->
                 <RibbonGroup Header="سبد خرید مشتری">
-                    <RibbonButton SmallImageSource="../Resources/Menu_Icons/menu_MgrCustCart_New.png" LargeImageSource="../Resources/Menu_Icons/menu_MgrCustCart_New.png" Label="ایجاد سبد خرید جدید"/>
-                    <RibbonButton Command="{Binding Path=Command_CreateNewCart}" SmallImageSource="../Resources/Menu_Icons/menu_MgrCustCart_Load.png" LargeImageSource="../Resources/Menu_Icons/menu_MgrCustCart_Load.png" Label="بارگزاری سبد خرید از فایل"/>
+                    <RibbonButton Command="{Binding Path=Command_CreateNewCart}" CommandParameter="{Binding ElementName=Window_Dashboard_View}" LargeImageSource="../Resources/Menu_Icons/menu_MgrCustCart_New.png" Label="ایجاد سبد خرید جدید"/>
+                    <RibbonButton LargeImageSource="../Resources/Menu_Icons/menu_MgrCustCart_Load.png" Label="بارگزاری سبد خرید از فایل"/>
                 </RibbonGroup>
 
                 <!-- Cashier -> Product Management -->

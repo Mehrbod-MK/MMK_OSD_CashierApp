@@ -245,20 +245,25 @@ namespace MMK_OSD_CashierApp
             try
             {
                 MySqlDataReader dbResult_QueryProduct = (MySqlDataReader)
-                _THROW_DBRESULT(await sql_Execute_Query($"SELECT * FROM {DB_TABLE_NAME_PRODUCTS}" +
-                $"WHERE ProductID={productCode};"));
+                _THROW_DBRESULT(await sql_Execute_Query($"SELECT * FROM  {schema}.{DB_TABLE_NAME_PRODUCTS} WHERE ProductID = {productCode};"));
 
-                Product product = new Product()
+                Product? product = null;
+
+                if (dbResult_QueryProduct.HasRows)
                 {
-                    ProductID = (uint)dbResult_QueryProduct["ProductID"],
-                    ProductName = (string)dbResult_QueryProduct["ProductName"],
-                    Price = (ulong)dbResult_QueryProduct["Price"],
-                    Vendor = ConvertFromDBVal<string?>(dbResult_QueryProduct["Vendor"]),
-                    DateTimeSubmitted = dbResult_QueryProduct.GetDateTime("DateSubmitted"),
-                    Quantity = (uint)dbResult_QueryProduct["Quantity"],
-                };
+                    await dbResult_QueryProduct.ReadAsync();
+                    product = new Product()
+                    {
+                        ProductID = (uint)dbResult_QueryProduct["ProductID"],
+                        ProductName = (string)dbResult_QueryProduct["ProductName"],
+                        Price = (ulong)dbResult_QueryProduct["Price"],
+                        Vendor = ConvertFromDBVal<string?>(dbResult_QueryProduct["Vendor"]),
+                        DateTimeSubmitted = dbResult_QueryProduct.GetDateTime("DateSubmitted"),
+                        Quantity = (uint)dbResult_QueryProduct["Quantity"],
+                    };
+                }
 
-                await sql_End_Query(dbResult_QueryProduct);
+                // await sql_End_Query(dbResult_QueryProduct);
 
                 return new DBResult()
                 {
@@ -270,7 +275,7 @@ namespace MMK_OSD_CashierApp
             {
                 return new DBResult()
                 {
-                    result = DBResultEnum.DB_OK,
+                    result = DBResultEnum.DB_ERROR,
                     returnValue = ex,
                 };
             }
@@ -293,17 +298,18 @@ namespace MMK_OSD_CashierApp
         public static string Hash(string input)
             => Convert.ToHexString(SHA1.HashData(Encoding.UTF8.GetBytes(input)));
 
-        public static object _THROW_DBRESULT(DBResult dBResult)
+        public static object? _THROW_DBRESULT(DBResult dBResult)
         {
             try
             {
                 if (dBResult.returnValue == null)
-                    throw new NullReferenceException("خطای بازگشت نتیجه از پایگاه داده. لطفاً با طراح سامانه تماس حاصل فرمایید.");
+                    return null;
+                    // throw new NullReferenceException("خطای بازگشت نتیجه از پایگاه داده. لطفاً با طراح سامانه تماس حاصل فرمایید.");
 
                 if (dBResult.result == DBResultEnum.DB_ERROR)
                     throw (Exception)dBResult.returnValue;
 
-                return (object)dBResult.returnValue;
+                return dBResult.returnValue;
             }
             catch(Exception ex) 
             {
