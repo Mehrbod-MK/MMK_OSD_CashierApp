@@ -20,6 +20,12 @@
     <None Remove="Resources\img_DBAdmin.png" />
     <None Remove="Resources\img_Help.png" />
     <None Remove="Resources\img_Personnel.png" />
+    <None Remove="Resources\Menu_Icons\cartIcon.png" />
+    <None Remove="Resources\Menu_Icons\ico_Eye.png" />
+    <None Remove="Resources\Menu_Icons\menu_Add.png" />
+    <None Remove="Resources\Menu_Icons\menu_Clear.png" />
+    <None Remove="Resources\Menu_Icons\menu_Customers_Ack.png" />
+    <None Remove="Resources\Menu_Icons\menu_Customers_Add.png" />
     <None Remove="Resources\Menu_Icons\menu_Icon_ManCustCart_L.png" />
     <None Remove="Resources\Menu_Icons\menu_Icon_ReportProduct.png" />
     <None Remove="Resources\Menu_Icons\menu_Icon_Reports.png" />
@@ -28,6 +34,11 @@
     <None Remove="Resources\Menu_Icons\menu_Icon_Tips_Large.png" />
     <None Remove="Resources\Menu_Icons\menu_MgrCustCart_Load.png" />
     <None Remove="Resources\Menu_Icons\menu_MgrCustCart_New.png" />
+    <None Remove="Resources\Menu_Icons\menu_Receipt.png" />
+    <None Remove="Resources\Menu_Icons\menu_Receipt_View.png" />
+    <None Remove="Resources\Menu_Icons\menu_Remove.png" />
+    <None Remove="Resources\Menu_Icons\menu_Submit.png" />
+    <None Remove="Resources\Menu_Icons\searchIcon.png" />
     <None Remove="Resources\productIcon.png" />
   </ItemGroup>
 
@@ -42,6 +53,12 @@
     <Resource Include="Resources\img_DBAdmin.png" />
     <Resource Include="Resources\img_Help.png" />
     <Resource Include="Resources\img_Personnel.png" />
+    <Resource Include="Resources\Menu_Icons\cartIcon.png" />
+    <Resource Include="Resources\Menu_Icons\ico_Eye.png" />
+    <Resource Include="Resources\Menu_Icons\menu_Customers_Ack.png" />
+    <Resource Include="Resources\Menu_Icons\menu_Add.png" />
+    <Resource Include="Resources\Menu_Icons\menu_Clear.png" />
+    <Resource Include="Resources\Menu_Icons\menu_Customers_Add.png" />
     <Resource Include="Resources\Menu_Icons\menu_Icon_ManCustCart_L.png" />
     <Resource Include="Resources\Menu_Icons\menu_Icon_ReportProduct.png" />
     <Resource Include="Resources\Menu_Icons\menu_Icon_Reports.png" />
@@ -50,6 +67,11 @@
     <Resource Include="Resources\Menu_Icons\menu_Icon_Tips_Large.png" />
     <Resource Include="Resources\Menu_Icons\menu_MgrCustCart_Load.png" />
     <Resource Include="Resources\Menu_Icons\menu_MgrCustCart_New.png" />
+    <Resource Include="Resources\Menu_Icons\menu_Receipt.png" />
+    <Resource Include="Resources\Menu_Icons\menu_Receipt_View.png" />
+    <Resource Include="Resources\Menu_Icons\menu_Remove.png" />
+    <Resource Include="Resources\Menu_Icons\menu_Submit.png" />
+    <Resource Include="Resources\Menu_Icons\searchIcon.png" />
     <Resource Include="Resources\productIcon.png" />
   </ItemGroup>
 

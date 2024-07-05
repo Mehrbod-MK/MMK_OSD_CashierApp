@@ -36,25 +36,25 @@
         <Ribbon Grid.ColumnSpan="3" Title="صندوقداری فروشگاه" ApplicationMenu="{x:Null}">
             <RibbonTab Header="پنل مدیریت سبد خرید">
                 <RibbonGroup Header="مدیریت کالاها">
-                    <RibbonButton Label="اضافه کردن کالا به سبد خرید"></RibbonButton>
-                    <RibbonButton Label="حذف کالاهای انتخاب شده از سبد خرید"></RibbonButton>
-                    <RibbonButton Label="خالی کردن سبد"></RibbonButton>
+                    <RibbonButton Label="اضافه کردن کالا به سبد خرید" LargeImageSource="../Resources/Menu_Icons/menu_Add.png"></RibbonButton>
+                    <RibbonButton Label="حذف کالاهای انتخاب شده از سبد خرید" LargeImageSource="../Resources/Menu_Icons/menu_Remove.png"></RibbonButton>
+                    <RibbonButton Label="خالی کردن سبد" LargeImageSource="../Resources/Menu_Icons/menu_Clear.png"></RibbonButton>
                 </RibbonGroup>
 
                 <RibbonSeparator/>
 
                 <RibbonGroup Header="مشتری">
-                    <RibbonButton Label="ثبت نام مشتری جدید"></RibbonButton>
-                    <RibbonButton Label="استعلام کد ملی مشتری وارد شده"></RibbonButton>
+                    <RibbonButton Label="ثبت نام مشتری جدید" LargeImageSource="../Resources/Menu_Icons/menu_Customers_Add.png"></RibbonButton>
+                    <RibbonButton Label="استعلام کد ملی مشتری وارد شده" LargeImageSource="../Resources/Menu_Icons/menu_Customers_Ack.png"></RibbonButton>
                 </RibbonGroup>
 
                 <RibbonGroup Header="گزارش">
-                    <RibbonButton Label="نمایش رسید"></RibbonButton>
-                    <RibbonButton Label="چاپ رسید"></RibbonButton>
+                    <RibbonButton Label="نمایش رسید" LargeImageSource="../Resources/Menu_Icons/menu_Receipt_View.png"></RibbonButton>
+                    <RibbonButton Label="چاپ رسید" LargeImageSource="../Resources/Menu_Icons/menu_Receipt.png"></RibbonButton>
                 </RibbonGroup>
 
                 <RibbonGroup Header="ثبت">
-                    <RibbonButton Label="تأیید نهایی"></RibbonButton>
+                    <RibbonButton Label="تأیید نهایی" LargeImageSource="../Resources/Menu_Icons/menu_Submit.png"></RibbonButton>
                 </RibbonGroup>
 
             </RibbonTab>
