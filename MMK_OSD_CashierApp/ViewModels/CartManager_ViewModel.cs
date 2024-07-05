@@ -56,6 +56,9 @@ namespace MMK_OSD_CashierApp.ViewModels
 
             SelectedProducts.Add(FoundProduct);
 
+            // Update 'Remove items' command.
+            command_RemoveFromCart.InvokeCanExecuteChanged();
+
             TextBox? txtBox = parameter as TextBox;
             if (txtBox != null)
                 txtBox.Focus();
@@ -65,7 +68,30 @@ namespace MMK_OSD_CashierApp.ViewModels
             return FoundProduct != null;
         }
 
+        private RelayCommand command_RemoveFromCart;
+        public ICommand Command_RemoveFromCart => command_RemoveFromCart;
+        public void Order_RemoveFromCart(object? parameter)
+        {
+            if (parameter is not ListView listView_Cart)
+                return;
 
+            var selectedItems = listView_Cart.SelectedItems.Cast<Product>().ToList();
+
+            foreach (var item in selectedItems)
+            {
+                SelectedProducts.Remove((Product)item);
+            }
+
+            // Update self.
+            command_RemoveFromCart.InvokeCanExecuteChanged();
+        }
+        public bool Allow_RemoveFromCart(object? parameter)
+        {
+            if (parameter is not ListView listView_Cart)
+                return false;
+
+            return listView_Cart.Items.Count > 0;
+        }
 
         #endregion
 
@@ -77,6 +103,7 @@ namespace MMK_OSD_CashierApp.ViewModels
             selectedProducts = new();
 
             command_AddToCart = new RelayCommand(Order_AddToCart, Allow_AddToCart);
+            command_RemoveFromCart = new RelayCommand(Order_RemoveFromCart, Allow_RemoveFromCart);
         }
     }
 

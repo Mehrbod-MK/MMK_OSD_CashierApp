@@ -47,7 +47,7 @@
             <RibbonTab Header="پنل مدیریت سبد خرید">
                 <RibbonGroup Header="مدیریت کالاها">
                     <RibbonButton Label="اضافه کردن کالا به سبد خرید" Command="{Binding Path=Command_AddToCart}" CommandParameter="{Binding ElementName=TextBox_Enter_ProductCode}" LargeImageSource="../Resources/Menu_Icons/menu_Add.png"></RibbonButton>
-                    <RibbonButton Label="حذف کالاهای انتخاب شده از سبد خرید" LargeImageSource="../Resources/Menu_Icons/menu_Remove.png"></RibbonButton>
+                    <RibbonButton Label="حذف کالاهای انتخاب شده از سبد خرید" Command="{Binding Path=Command_RemoveFromCart}" CommandParameter="{Binding ElementName=ListView_Cart}" LargeImageSource="../Resources/Menu_Icons/menu_Remove.png"></RibbonButton>
                     <RibbonButton Label="خالی کردن سبد" LargeImageSource="../Resources/Menu_Icons/menu_Clear.png"></RibbonButton>
                 </RibbonGroup>
 
@@ -116,7 +116,7 @@
 
         <!-- List of products in cart -->
         <GroupBox Grid.ColumnSpan="3" Margin="2" Grid.Column="0" Grid.Row="2" Header="سبد خرید" BorderThickness="3">
-            <ListView FontSize="15" ItemsSource="{Binding SelectedProducts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <ListView x:Name="ListView_Cart" FontSize="15" ItemsSource="{Binding SelectedProducts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Width="140" Header="شماره کالا" DisplayMemberBinding="{Binding Path=ProductID}"/>
