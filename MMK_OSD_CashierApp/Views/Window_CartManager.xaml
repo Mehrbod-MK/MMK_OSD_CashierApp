@@ -46,7 +46,7 @@
         <Ribbon Grid.ColumnSpan="3" Title="صندوقداری فروشگاه" ApplicationMenu="{x:Null}">
             <RibbonTab Header="پنل مدیریت سبد خرید">
                 <RibbonGroup Header="مدیریت کالاها">
-                    <RibbonButton Label="اضافه کردن کالا به سبد خرید" LargeImageSource="../Resources/Menu_Icons/menu_Add.png"></RibbonButton>
+                    <RibbonButton Label="اضافه کردن کالا به سبد خرید" Command="{Binding Path=Command_AddToCart}" CommandParameter="{Binding ElementName=TextBox_Enter_ProductCode}" LargeImageSource="../Resources/Menu_Icons/menu_Add.png"></RibbonButton>
                     <RibbonButton Label="حذف کالاهای انتخاب شده از سبد خرید" LargeImageSource="../Resources/Menu_Icons/menu_Remove.png"></RibbonButton>
                     <RibbonButton Label="خالی کردن سبد" LargeImageSource="../Resources/Menu_Icons/menu_Clear.png"></RibbonButton>
                 </RibbonGroup>
@@ -76,7 +76,7 @@
                 <TextBlock Foreground="Black" FontSize="17" FontWeight="ExtraBold">کد کالا:</TextBlock>
                 <TextBox x:Name="TextBox_Enter_ProductCode" TextChanged="TextBox_Enter_ProductCode_TextChanged" Foreground="Black" FontSize="17" TextAlignment="Center"/>
                 <TextBlock Foreground="Black" FontSize="17" FontWeight="SemiBold">کد ملی مشتری:</TextBlock>
-                <TextBox Foreground="Black" FontSize="17" TextAlignment="Center"/>
+                <TextBox x:Name="TextBox_Enter_CustomerNationalID" Foreground="Black" FontSize="17" TextAlignment="Center"/>
             </StackPanel>
         </GroupBox>
             
@@ -116,14 +116,14 @@
 
         <!-- List of products in cart -->
         <GroupBox Grid.ColumnSpan="3" Margin="2" Grid.Column="0" Grid.Row="2" Header="سبد خرید" BorderThickness="3">
-            <ListView FontSize="15">
+            <ListView FontSize="15" ItemsSource="{Binding SelectedProducts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Width="140" Header="شماره کالا"/>
-                        <GridViewColumn Width="140" Header="نام کالا"/>
-                        <GridViewColumn Width="140" Header="قیمت"/>
-                        <GridViewColumn Width="140" Header="شرکت عرضه‌کننده"/>
-                        <GridViewColumn Width="140" Header="تاریخ ثبت"/>
+                        <GridViewColumn Width="140" Header="شماره کالا" DisplayMemberBinding="{Binding Path=ProductID}"/>
+                        <GridViewColumn Width="140" Header="نام کالا" DisplayMemberBinding="{Binding Path=ProductName}"/>
+                        <GridViewColumn Width="140" Header="قیمت" DisplayMemberBinding="{Binding Path=Price}"/>
+                        <GridViewColumn Width="140" Header="شرکت عرضه‌کننده" DisplayMemberBinding="{Binding Path=Vendor}"/>
+                        <GridViewColumn Width="140" Header="تاریخ ثبت" DisplayMemberBinding="{Binding Path=DateTimeSubmitted, Converter={StaticResource Converter_FromDateTime_ToPersianLongDateString}}"/>
                     </GridView>
                 </ListView.View>
             </ListView>

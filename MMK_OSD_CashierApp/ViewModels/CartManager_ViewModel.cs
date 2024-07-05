@@ -1,6 +1,7 @@
 ﻿using MMK_OSD_CashierApp.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -8,19 +9,75 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 
 namespace MMK_OSD_CashierApp.ViewModels
 {
     public class CartManager_ViewModel : ViewModelBase
     {
+        /// <summary>
+        /// Found product by its ID code.
+        /// </summary>
         private Product? foundProduct;
+
+        private ObservableCollection<Product> selectedProducts;
+
+        public ObservableCollection<Product> SelectedProducts
+        {
+            get => selectedProducts;
+            set => SetProperty(ref selectedProducts, value);
+        }
 
         /// <summary>
         /// Found product, entered by its code.
         /// </summary>
-        public Product? FoundProduct { get => foundProduct; set { SetProperty(ref foundProduct, value); } }
+        public Product? FoundProduct 
+        { 
+            get => foundProduct; 
+            set 
+            { 
+                SetProperty(ref foundProduct, value); 
+                command_AddToCart.InvokeCanExecuteChanged(); 
+            } 
+        }
+
+        #region Public_CartManager_VM_Commands
+
+        private RelayCommand command_AddToCart;
+        public ICommand Command_AddToCart => command_AddToCart;
+        public void Order_AddToCart(object? parameter)
+        {
+            if (FoundProduct == null)
+                return;
+
+            SelectedProducts.Add(FoundProduct);
+
+            TextBox? txtBox = parameter as TextBox;
+            if (txtBox != null)
+                txtBox.Focus();
+        }
+        public bool Allow_AddToCart(object? parameter)
+        {
+            return FoundProduct != null;
+        }
+
+
+
+        #endregion
+
+        /// <summary>
+        /// Public ctor.
+        /// </summary>
+        public CartManager_ViewModel()
+        {
+            selectedProducts = new();
+
+            command_AddToCart = new RelayCommand(Order_AddToCart, Allow_AddToCart);
+        }
     }
 
     [ValueConversion(typeof(DateTime), typeof(string))]

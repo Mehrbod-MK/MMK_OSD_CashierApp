@@ -41,7 +41,10 @@ namespace MMK_OSD_CashierApp.Views
             Product? foundProduct = null;
 
             if (!uint.TryParse(TextBox_Enter_ProductCode.Text, out uint productID))
+            {
+                vm_Dashboard.FoundProduct = null;
                 return;
+            }
 
             Task.Run(async () =>
             {
