@@ -7,7 +7,7 @@ using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-
+using MMK_OSD_CashierApp.Models;
 using MySql.Data;
 using MySql.Data.MySqlClient;
 using MySqlX.XDevAPI.Common;
@@ -24,7 +24,8 @@ namespace MMK_OSD_CashierApp
         public const string DB_ROOT_USER = "root";
         public const string DB_DEFAULT_USERNAME = "MehrbodMK";
 
-        public const string DB_TABLE_NAME_USERS = @"mmk_osd_cashierapp.users";
+        public const string DB_TABLE_NAME_USERS = @"users";
+        public const string DB_TABLE_NAME_PRODUCTS = @"products";
 
         public const string DB_QUERY_USER_OK = @"DB_QUERY_USER_OK";
         public const string DB_QUERY_ERROR_USER_BAD_CREDENTIALS = @"DB_QUERY_ERROR_USER_BAD_CREDENTIALS";
@@ -43,7 +44,21 @@ namespace MMK_OSD_CashierApp
 
         #endregion
 
-        #region DB_Public_Methods
+        #region DBMgr_Generics
+
+        public static T? ConvertFromDBVal<T>(object obj)
+        {
+            if (obj == null || obj == DBNull.Value)
+            {
+                return default(T); // returns the default value for the type
+            }
+            else
+            {
+                return (T)obj;
+            }
+        }
+
+        #endregion
 
         #region DB_Public_Enumerations
 
@@ -80,6 +95,8 @@ namespace MMK_OSD_CashierApp
         }
 
         #endregion
+
+        #region DB_Public_Methods
 
         /// <summary>
         /// Creates an initial instance of DB class.
@@ -223,6 +240,42 @@ namespace MMK_OSD_CashierApp
             }
         }
 
+        public async Task<DBResult> db_Get_Product(uint productCode)
+        {
+            try
+            {
+                MySqlDataReader dbResult_QueryProduct = (MySqlDataReader)
+                _THROW_DBRESULT(await sql_Execute_Query($"SELECT * FROM {DB_TABLE_NAME_PRODUCTS}" +
+                $"WHERE ProductID={productCode};"));
+
+                Product product = new Product()
+                {
+                    ProductID = (uint)dbResult_QueryProduct["ProductID"],
+                    ProductName = (string)dbResult_QueryProduct["ProductName"],
+                    Price = (ulong)dbResult_QueryProduct["Price"],
+                    Vendor = ConvertFromDBVal<string?>(dbResult_QueryProduct["Vendor"]),
+                    DateTimeSubmitted = dbResult_QueryProduct.GetDateTime("DateSubmitted"),
+                    Quantity = (uint)dbResult_QueryProduct["Quantity"],
+                };
+
+                await sql_End_Query(dbResult_QueryProduct);
+
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_OK,
+                    returnValue = product,
+                };
+            }
+            catch(Exception ex)
+            {
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_OK,
+                    returnValue = ex,
+                };
+            }
+        }
+
         public static string SecureStringToString(SecureString value)
         {
             IntPtr bstr = Marshal.SecureStringToBSTR(value);
@@ -317,16 +370,19 @@ namespace MMK_OSD_CashierApp
                     this.server = server;
                     this.port = port;
                     this.username = DB_ROOT_USER;
+                    this.schema = schema;
 
                     return
                     $"SERVER={server};" +
                     $"PORT={port};" +
+                    $"DATABASE={schema};" +
                     $"UID={DB_ROOT_USER}";
                 }
                 else
                 {
                     this.server = server;
                     this.port = port;
+                    this.schema = schema;
                     this.username = DB_ROOT_USER;
                     this.password = rootPassword;
 
@@ -334,6 +390,7 @@ namespace MMK_OSD_CashierApp
                        $"SERVER={server};" +
                        $"PORT={port};" +
                        $"UID={DB_ROOT_USER};" +
+                       $"DATABASE={schema};" +
                        $"PASSWORD={SecureStringToString(rootPassword)}";
                 }
             }

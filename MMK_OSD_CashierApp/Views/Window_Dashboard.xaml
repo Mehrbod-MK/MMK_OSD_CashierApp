@@ -34,7 +34,7 @@
                 <!-- Cashier -> Customer Cart Group  -->
                 <RibbonGroup Header="سبد خرید مشتری">
                     <RibbonButton SmallImageSource="../Resources/Menu_Icons/menu_MgrCustCart_New.png" LargeImageSource="../Resources/Menu_Icons/menu_MgrCustCart_New.png" Label="ایجاد سبد خرید جدید"/>
-                    <RibbonButton SmallImageSource="../Resources/Menu_Icons/menu_MgrCustCart_Load.png" LargeImageSource="../Resources/Menu_Icons/menu_MgrCustCart_Load.png" Label="بارگزاری سبد خرید از فایل"/>
+                    <RibbonButton Command="{Binding Path=Command_CreateNewCart}" SmallImageSource="../Resources/Menu_Icons/menu_MgrCustCart_Load.png" LargeImageSource="../Resources/Menu_Icons/menu_MgrCustCart_Load.png" Label="بارگزاری سبد خرید از فایل"/>
                 </RibbonGroup>
 
                 <!-- Cashier -> Product Management -->

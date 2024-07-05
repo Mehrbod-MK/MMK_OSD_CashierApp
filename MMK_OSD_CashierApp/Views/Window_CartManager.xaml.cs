@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MMK_OSD_CashierApp.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,33 @@ namespace MMK_OSD_CashierApp.Views
     /// </summary>
     public partial class Window_CartManager : Window
     {
-        public Window_CartManager()
+        private Task? task_UpdateProduct = null;
+        private CartManager_ViewModel? vm_Dashboard = null;
+
+        public Window_CartManager(CartManager_ViewModel vm_Dashboard)
         {
             InitializeComponent();
+
+            // Set binding Data Context.
+            this.vm_Dashboard = vm_Dashboard;
+            DataContext = vm_Dashboard;
+        }
+
+        private void TextBox_Enter_ProductCode_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (vm_Dashboard == null)
+                return;
+
+            if (task_UpdateProduct?.Status == TaskStatus.Running)
+            {
+                task_UpdateProduct.Dispose();
+                task_UpdateProduct = null;
+            }
+
+            task_UpdateProduct = new Task(async () => await vm_Dashboard.FindProduct_AfterTime
+                (Convert.ToUInt32(TextBox_Enter_ProductCode), TimeSpan.FromSeconds(3)));
+
+            task_UpdateProduct.Start();
         }
     }
 }

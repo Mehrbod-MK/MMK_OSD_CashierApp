@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MMK_OSD_CashierApp.Views"
+        xmlns:viewmodel="clr-namespace:MMK_OSD_CashierApp.ViewModels"
         mc:Ignorable="d"
         Title="مدیریت سبد خرید مشتری" Height="600" Width="800"
         FlowDirection="RightToLeft"
@@ -15,6 +16,11 @@
                     Viewport="0,0,100,100" ViewportUnits="Absolute"
                     TileMode="Tile" Stretch="Fill" AlignmentX="Left" AlignmentY="Top"  />
         </Window.Background>
+
+    <Window.Resources>
+        <!-- Value Converters -->
+        <viewmodel:FromDateTime_ToPersianLongDateString x:Key="Converter_FromDateTime_ToPersianLongDateString"/>
+    </Window.Resources>
 
     <Grid>
 
@@ -64,7 +70,7 @@
         <GroupBox Margin="3" Grid.Column="0" Grid.Row="1" Header="جستجوی کالا/مشتری" BorderThickness="3">
             <StackPanel VerticalAlignment="Center" Margin="5" Orientation="Vertical">
                 <TextBlock Foreground="Black" FontSize="17" FontWeight="ExtraBold">کد کالا:</TextBlock>
-                <TextBox Foreground="Black" FontSize="17" TextAlignment="Center"/>
+                <TextBox x:Name="TextBox_Enter_ProductCode" TextChanged="TextBox_Enter_ProductCode_TextChanged" Foreground="Black" FontSize="17" TextAlignment="Center"/>
                 <TextBlock Foreground="Black" FontSize="17" FontWeight="SemiBold">کد ملی مشتری:</TextBlock>
                 <TextBox Foreground="Black" FontSize="17" TextAlignment="Center"/>
             </StackPanel>
@@ -93,11 +99,11 @@
 
                 <!--- Product Values -->
                 <StackPanel Grid.Column="1" Orientation="Vertical">
-                    <TextBlock ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}" FontSize="18">--</TextBlock>
-                    <TextBlock FontSize="18">--</TextBlock>
-                    <TextBlock FontSize="18">--</TextBlock>
-                    <TextBlock FontSize="18">--</TextBlock>
-                    <TextBlock FontSize="18">--</TextBlock>
+                    <TextBlock Text="{Binding FoundProduct.ProductName, FallbackValue=جستجو نتیجه‌ای در بر نداشت}" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}" FontSize="18">--</TextBlock>
+                    <TextBlock Text="{Binding Path=FoundProduct.Price, FallbackValue=نامشخص}" FontSize="18">--</TextBlock>
+                    <TextBlock Text="{Binding Path=FoundProduct.Vendor, FallbackValue=نامشخص}" FontSize="18">--</TextBlock>
+                    <TextBlock Text="{Binding Path=FoundProduct.DateTimeSubmitted, FallbackValue=نامشخص, Converter={StaticResource Converter_FromDateTime_ToPersianLongDateString}}" FontSize="18">--</TextBlock>
+                    <TextBlock Text="{Binding Path=FoundProduct.Quantity, FallbackValue=نامشخص}" FontSize="18">--</TextBlock>
                 </StackPanel>
             </Grid>
         </GroupBox>
