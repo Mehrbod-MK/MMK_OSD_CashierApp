@@ -22,7 +22,7 @@ namespace MMK_OSD_CashierApp.Views
     public partial class Window_CartManager : Window
     {
         // private Task? task_UpdateProduct = null;
-        private CartManager_ViewModel? vm_Dashboard = null;
+        private CartManager_ViewModel vm_Dashboard;
 
         public Window_CartManager(CartManager_ViewModel vm_Dashboard)
         {
@@ -57,6 +57,24 @@ namespace MMK_OSD_CashierApp.Views
                     vm_Dashboard.FoundProduct = foundProduct;
                 });
             });
+        }
+
+        private void ListView_Cart_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            var command_RemoveAll = vm_Dashboard.Command_RemoveAllCart as RelayCommand;
+            if (command_RemoveAll == null)
+                return;
+
+            command_RemoveAll.InvokeCanExecuteChanged();
+        }
+
+        private void ListView_Cart_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var command_RemoveAll = vm_Dashboard.Command_RemoveAllCart as RelayCommand;
+            if (command_RemoveAll == null)
+                return;
+
+            command_RemoveAll.InvokeCanExecuteChanged();
         }
     }
 }

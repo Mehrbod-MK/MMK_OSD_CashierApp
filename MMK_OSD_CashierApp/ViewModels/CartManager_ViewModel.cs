@@ -58,6 +58,7 @@ namespace MMK_OSD_CashierApp.ViewModels
 
             // Update 'Remove items' command.
             command_RemoveFromCart.InvokeCanExecuteChanged();
+            command_RemoveAllCart.InvokeCanExecuteChanged();
 
             TextBox? txtBox = parameter as TextBox;
             if (txtBox != null)
@@ -79,18 +80,34 @@ namespace MMK_OSD_CashierApp.ViewModels
 
             foreach (var item in selectedItems)
             {
-                SelectedProducts.Remove((Product)item);
+                SelectedProducts.Remove(item);
             }
 
-            // Update self.
+            // Update self and remove all.
             command_RemoveFromCart.InvokeCanExecuteChanged();
+            command_RemoveAllCart.InvokeCanExecuteChanged();
         }
         public bool Allow_RemoveFromCart(object? parameter)
         {
             if (parameter is not ListView listView_Cart)
                 return false;
 
-            return listView_Cart.Items.Count > 0;
+            return SelectedProducts.Count > 0;
+        }
+
+        private RelayCommand command_RemoveAllCart;
+        public ICommand Command_RemoveAllCart => command_RemoveAllCart;
+        public void Order_RemoveAllCart(object? parameter)
+        {
+            SelectedProducts.Clear();
+
+            // Update self and item removal.
+            command_RemoveAllCart.InvokeCanExecuteChanged();
+            command_RemoveFromCart.InvokeCanExecuteChanged();
+        }
+        public bool Allow_RemoveAllCart(object? parameter)
+        {
+            return SelectedProducts.Count > 0;
         }
 
         #endregion
@@ -104,6 +121,7 @@ namespace MMK_OSD_CashierApp.ViewModels
 
             command_AddToCart = new RelayCommand(Order_AddToCart, Allow_AddToCart);
             command_RemoveFromCart = new RelayCommand(Order_RemoveFromCart, Allow_RemoveFromCart);
+            command_RemoveAllCart = new RelayCommand(Order_RemoveAllCart, Allow_RemoveAllCart);
         }
     }
 
