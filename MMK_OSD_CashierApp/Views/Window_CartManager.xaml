@@ -21,7 +21,8 @@
         <!-- Value Converters -->
         <viewmodel:FromDateTime_ToPersianLongDateString x:Key="Converter_FromDateTime_ToPersianLongDateString"/>
         <viewmodel:FromString_To_Bitmap x:Key="Converter_FromString_ToBitmap"/>
-        
+        <viewmodel:FromUint64_To_ThousandSeparatedString x:Key="Converter_FromUint64_To_ThousandSeparatedString"/>
+
         <!-- Fallback Values -->
         <BitmapImage x:Key="Fallback_Image_ProductThumbnail" UriSource="../Resources/productIcon.png"/>
     </Window.Resources>
@@ -134,15 +135,17 @@
         <Viewbox Grid.Column="0" Grid.Row="3">
             <StackPanel>
                 <TextBlock Foreground="DarkRed" FontSize="27">قیمت کل:</TextBlock>
-                <TextBlock Foreground="DarkRed" FontSize="30">00000000000</TextBlock>
+                <TextBlock Foreground="DarkRed" FontSize="30"
+                           Text="{Binding TotalPrice, Converter={StaticResource Converter_FromUint64_To_ThousandSeparatedString}}"></TextBlock>
             </StackPanel>
         </Viewbox>
 
         <!-- Total Discount -->
         <Viewbox Grid.Column="1" Grid.Row="3">
             <StackPanel>
-                <TextBlock Foreground="Green" FontSize="27">تخفیف درصدی:</TextBlock>
-                <TextBlock Foreground="Green" FontSize="30">00000000000</TextBlock>
+                <TextBlock Foreground="Green" FontSize="27">تخفیف:</TextBlock>
+                <TextBlock Foreground="Green" FontSize="30"
+                           Text="{Binding TotalDiscount, Converter={StaticResource Converter_FromUint64_To_ThousandSeparatedString}}"></TextBlock>
             </StackPanel>
         </Viewbox>
 
@@ -150,7 +153,8 @@
         <Viewbox Grid.Column="2" Grid.Row="3">
             <StackPanel>
                 <TextBlock Foreground="Blue" FontSize="27">قابل پرداخت:</TextBlock>
-                <TextBlock Foreground="Blue" FontSize="30">00000000000</TextBlock>
+                <TextBlock Foreground="Blue" FontSize="30"
+                           Text="{Binding TotalPayment, Converter={StaticResource Converter_FromUint64_To_ThousandSeparatedString}}"></TextBlock>
             </StackPanel>
         </Viewbox>
 

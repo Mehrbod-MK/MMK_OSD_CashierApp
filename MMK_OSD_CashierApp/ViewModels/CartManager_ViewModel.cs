@@ -45,6 +45,25 @@ namespace MMK_OSD_CashierApp.ViewModels
             } 
         }
 
+        private ulong total_Price;
+        private ulong total_Discount;
+        private ulong total_Payment;
+        public ulong TotalPrice
+        {
+            get => total_Price; 
+            private set => SetProperty(ref total_Price, value);
+        }
+        public ulong TotalDiscount
+        {
+            get => total_Discount;
+            private set => SetProperty(ref total_Discount, value);
+        }
+        public ulong TotalPayment
+        {
+            get => total_Payment;
+            private set => SetProperty(ref total_Payment, value);
+        }
+
         #region Public_CartManager_VM_Commands
 
         private RelayCommand command_AddToCart;
@@ -59,6 +78,9 @@ namespace MMK_OSD_CashierApp.ViewModels
             // Update 'Remove items' command.
             command_RemoveFromCart.InvokeCanExecuteChanged();
             command_RemoveAllCart.InvokeCanExecuteChanged();
+
+            // Update Cash Values.
+            Update_CashValues();
 
             TextBox? txtBox = parameter as TextBox;
             if (txtBox != null)
@@ -83,6 +105,11 @@ namespace MMK_OSD_CashierApp.ViewModels
                 SelectedProducts.Remove(item);
             }
 
+            listView_Cart.SelectedIndex = -1;
+
+            // Update Cash Values.
+            Update_CashValues();
+
             // Update self and remove all.
             command_RemoveFromCart.InvokeCanExecuteChanged();
             command_RemoveAllCart.InvokeCanExecuteChanged();
@@ -104,6 +131,9 @@ namespace MMK_OSD_CashierApp.ViewModels
             // Update self and item removal.
             command_RemoveAllCart.InvokeCanExecuteChanged();
             command_RemoveFromCart.InvokeCanExecuteChanged();
+
+            // Update Cash Values.
+            Update_CashValues();
         }
         public bool Allow_RemoveAllCart(object? parameter)
         {
@@ -122,6 +152,25 @@ namespace MMK_OSD_CashierApp.ViewModels
             command_AddToCart = new RelayCommand(Order_AddToCart, Allow_AddToCart);
             command_RemoveFromCart = new RelayCommand(Order_RemoveFromCart, Allow_RemoveFromCart);
             command_RemoveAllCart = new RelayCommand(Order_RemoveAllCart, Allow_RemoveAllCart);
+        }
+
+        public void Update_CashValues()
+        {
+            ulong sum_Prices = 0;
+            foreach(var x in SelectedProducts)
+            {
+                sum_Prices += x.Price;
+            }
+            TotalPrice = sum_Prices;
+
+            // TODO: Calculate Discount.
+            ulong sum_Discount = 0;
+
+            long pay = (long)sum_Prices - (long)sum_Discount;
+            if (pay < 0)
+                TotalPayment = 0;
+            else
+                TotalPayment = sum_Prices - sum_Discount;
         }
     }
 
@@ -182,6 +231,20 @@ namespace MMK_OSD_CashierApp.ViewModels
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException("امکان تبدیل رشته به تصویر بیت‌مپ وجود ندارد.");
+        }
+    }
+
+    [ValueConversion(typeof(ulong), typeof(string))]
+    public class FromUint64_To_ThousandSeparatedString : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return $"{(ulong)value:N0}";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }
