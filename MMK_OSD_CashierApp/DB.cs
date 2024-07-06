@@ -297,6 +297,49 @@ namespace MMK_OSD_CashierApp
             }
         }
 
+        public async Task<DBResult> db_Get_User(string nationalID)
+        {
+            try
+            {
+                MySqlDataReader? dbResult_QueryUser =
+                _THROW_DBRESULT<MySqlDataReader?>(await sql_Execute_Query($"SELECT * FROM  {schema}.{DB_TABLE_NAME_USERS} WHERE NationalID = {nationalID};"));
+
+                User? user = null;
+
+                if (dbResult_QueryUser != null && dbResult_QueryUser.HasRows)
+                {
+                    await dbResult_QueryUser.ReadAsync();
+                    user = new User()
+                    {
+                        NationalID = (string)dbResult_QueryUser["NationalID"],
+                        OptinalUserName = ConvertFromDBVal<string?>(dbResult_QueryUser["OptinalUsername"]),
+                        FirstName = ConvertFromDBVal<string?>(dbResult_QueryUser["FirstName"]),
+                        LastName = (string)dbResult_QueryUser["LastName"],
+                        RoleFlags = (uint)dbResult_QueryUser["RoleFlags"],
+                        Email = ConvertFromDBVal<string?>(dbResult_QueryUser["Email"]),
+                        RegisterDateTime = dbResult_QueryUser.GetDateTime("RegisterDateTime"),
+                        LastLoginDateTime = dbResult_QueryUser.GetDateTime("LastLoginDateTime")
+                    };
+                }
+
+                await sql_End_Query(dbResult_QueryUser);
+
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_OK,
+                    returnValue = user,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_ERROR,
+                    returnValue = ex,
+                };
+            }
+        }
+
         public static string SecureStringToString(SecureString value)
         {
             IntPtr bstr = Marshal.SecureStringToBSTR(value);
