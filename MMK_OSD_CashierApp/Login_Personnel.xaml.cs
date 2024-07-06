@@ -100,6 +100,9 @@ namespace MMK_OSD_CashierApp
                     return;
                 }
 
+                // Check if user has appropriate Role to access personnel's profile.
+
+
                 // Login was successful, go to personnel's profile.
                 loginSuccessful = true;
                 e.Result = DB.DB_QUERY_USER_OK;
