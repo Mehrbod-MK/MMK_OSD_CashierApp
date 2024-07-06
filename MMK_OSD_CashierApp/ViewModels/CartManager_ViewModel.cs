@@ -180,9 +180,10 @@ namespace MMK_OSD_CashierApp.ViewModels
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             DateTime dt = (DateTime) value;
+            PersianCalendar pc = new PersianCalendar();
 
             string dayOfWeek = string.Empty;
-            switch(dt.DayOfWeek)
+            switch(pc.GetDayOfWeek(dt))
             {
                 case DayOfWeek.Sunday: dayOfWeek = "یکشنبه"; break;
                 case DayOfWeek.Monday: dayOfWeek = "دوشنبه"; break;
@@ -194,7 +195,7 @@ namespace MMK_OSD_CashierApp.ViewModels
             }
 
             string monthName = string.Empty;
-            switch(dt.Month)
+            switch(pc.GetMonth(dt))
             {
                 case 1: monthName = "فروردین"; break;
                 case 2: monthName = "اردیبهشت"; break;
@@ -210,7 +211,7 @@ namespace MMK_OSD_CashierApp.ViewModels
                 case 12: monthName = "اسفند"; break;
             }
 
-            return $"{dayOfWeek}، {dt.Day:00} {monthName} {dt.Year:0000}";
+            return $"{dayOfWeek}، {pc.GetDayOfMonth(dt):00} {monthName} {pc.GetYear(dt):0000}";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
