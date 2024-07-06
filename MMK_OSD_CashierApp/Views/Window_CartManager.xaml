@@ -164,8 +164,9 @@
             </TextBlock>
             <Separator/>
             <TextBlock>
-                تعداد اقلام انتخابی:  ?
+                تعداد اقلام در سبد:
             </TextBlock>
+            <TextBlock Text="{Binding Path=SelectedProducts.Count, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}"/>
         </StatusBar>
         
     </Grid>
