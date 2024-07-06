@@ -1,4 +1,5 @@
-﻿using MMK_OSD_CashierApp.ViewModels;
+﻿using MMK_OSD_CashierApp.Models;
+using MMK_OSD_CashierApp.ViewModels;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -85,7 +86,22 @@ namespace MMK_OSD_CashierApp
 
                 // Check if username and password match a record in database.
                 wvm_LoginPersonnel.ProgressState = "در حال جستجوی پایگاه داده...";
-                var db_GetUserQuery = MainWindow.db.sql_Execute_Query(
+                User? foundUser = DB._THROW_DBRESULT<User?>(MainWindow.db.db_Get_User(username).Result);
+                if(foundUser == null || foundUser.LoginPassword.ToLower() != password.ToLower())
+                {
+                    // If no user found or password was wrong, set error state.
+                    e.Result = DB.DB_QUERY_ERROR_USER_BAD_CREDENTIALS;
+                    return;
+                }
+
+                // Check user role for personnel.
+                if(foundUser.RoleFlags == (uint)DB.DB_Roles.DB_ROLE_Customer)
+                {
+                    // If user didn't have a personnel's role, restrict access.
+                    e.Result = DB.DB_QUERY_ERROR_RESTRICTED_ACCESS;
+                    return;
+                }
+                /*var db_GetUserQuery = MainWindow.db.sql_Execute_Query(
                     $"SELECT * FROM {DB.DB_TABLE_NAME_USERS} WHERE NationalID = \'{username}\' AND LoginPassword = \'{password}\'"
                     ).Result;
                 
@@ -98,10 +114,7 @@ namespace MMK_OSD_CashierApp
                     e.Result = DB.DB_QUERY_ERROR_USER_BAD_CREDENTIALS;
 
                     return;
-                }
-
-                // Check if user has appropriate Role to access personnel's profile.
-
+                }*/
 
                 // Login was successful, go to personnel's profile.
                 loginSuccessful = true;
@@ -132,6 +145,21 @@ namespace MMK_OSD_CashierApp
                 {
                     MessageBox.Show(
                     $"نام کاربری یا کلمه عبور اشتباه است.",
+                    "خطای ورود به سامانه",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error,
+                    MessageBoxResult.OK,
+                    MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign
+                    );
+
+                    return;
+                }
+
+                // Restricted Access.
+                if ((string)e.Result == DB.DB_QUERY_ERROR_RESTRICTED_ACCESS)
+                {
+                    MessageBox.Show(
+                    $"شما مجاز به ورود به سامانه پرسنلی نمی‌باشید.",
                     "خطای ورود به سامانه",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error,

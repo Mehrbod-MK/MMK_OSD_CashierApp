@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -31,6 +32,7 @@ namespace MMK_OSD_CashierApp
 
         public const string DB_QUERY_USER_OK = @"DB_QUERY_USER_OK";
         public const string DB_QUERY_ERROR_USER_BAD_CREDENTIALS = @"DB_QUERY_ERROR_USER_BAD_CREDENTIALS";
+        public const string DB_QUERY_ERROR_RESTRICTED_ACCESS = @"DB_QUERY_ERROR_RESTRICTED_ACCESS";
 
         #endregion
 
@@ -302,7 +304,7 @@ namespace MMK_OSD_CashierApp
             try
             {
                 MySqlDataReader? dbResult_QueryUser =
-                _THROW_DBRESULT<MySqlDataReader?>(await sql_Execute_Query($"SELECT * FROM  {schema}.{DB_TABLE_NAME_USERS} WHERE NationalID = {nationalID};"));
+                _THROW_DBRESULT<MySqlDataReader?>(await sql_Execute_Query($"SELECT * FROM  {schema}.{DB_TABLE_NAME_USERS} WHERE NationalID = \'{nationalID}\';"));
 
                 User? user = null;
 
@@ -312,13 +314,16 @@ namespace MMK_OSD_CashierApp
                     user = new User()
                     {
                         NationalID = (string)dbResult_QueryUser["NationalID"],
-                        OptinalUserName = ConvertFromDBVal<string?>(dbResult_QueryUser["OptinalUsername"]),
+                        LoginPassword = (string)dbResult_QueryUser["LoginPassword"],
+                        OptionalUserName = ConvertFromDBVal<string?>(dbResult_QueryUser["OptionalUsername"]),
                         FirstName = ConvertFromDBVal<string?>(dbResult_QueryUser["FirstName"]),
                         LastName = (string)dbResult_QueryUser["LastName"],
                         RoleFlags = (uint)dbResult_QueryUser["RoleFlags"],
                         Email = ConvertFromDBVal<string?>(dbResult_QueryUser["Email"]),
                         RegisterDateTime = dbResult_QueryUser.GetDateTime("RegisterDateTime"),
-                        LastLoginDateTime = dbResult_QueryUser.GetDateTime("LastLoginDateTime")
+                        /*LastLoginDateTime = (await dbResult_QueryUser.IsDBNullAsync("LastLoginDateTime")) 
+                                        ? dbResult_QueryUser.GetDateTime("LastLoginDateTime") 
+                                        : null,*/
                     };
                 }
 
@@ -368,7 +373,7 @@ namespace MMK_OSD_CashierApp
                 if (dBResult.result == DBResultEnum.DB_ERROR)
                     throw (Exception)dBResult.returnValue;
 
-                return (T)dBResult.returnValue;
+                return (T?)dBResult.returnValue;
             }
             catch(Exception) 
             {

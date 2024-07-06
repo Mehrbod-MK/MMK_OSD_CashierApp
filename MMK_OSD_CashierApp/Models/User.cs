@@ -12,6 +12,7 @@ namespace MMK_OSD_CashierApp.Models
         #region User_Private_Fields
 
         private string nationalID = string.Empty;
+        private string password = string.Empty;
         private string? optionalUsername;
         private string? firstName;
         private string lastName = string.Empty;
@@ -29,7 +30,12 @@ namespace MMK_OSD_CashierApp.Models
             get => nationalID;
             set => SetProperty(ref nationalID, value);
         }
-        public string? OptinalUserName
+        public string LoginPassword
+        {
+            get => password;
+            set => SetProperty(ref password, value);
+        }
+        public string? OptionalUserName
         {
             get => optionalUsername;
             set => SetProperty(ref optionalUsername, value);
