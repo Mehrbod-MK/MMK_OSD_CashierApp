@@ -44,7 +44,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- Main Toolbar Ribbon -->
-        <Ribbon Grid.ColumnSpan="3" Title="صندوقداری فروشگاه" ApplicationMenu="{x:Null}">
+        <Ribbon ApplicationMenu="{x:Null}" Grid.ColumnSpan="3" Title="صندوقداری فروشگاه">
             <RibbonTab Header="پنل مدیریت سبد خرید">
                 <RibbonGroup Header="مدیریت کالاها">
                     <RibbonButton Label="اضافه کردن کالا به سبد خرید" Command="{Binding Path=Command_AddToCart}" CommandParameter="{Binding ElementName=TextBox_Enter_ProductCode}" LargeImageSource="../Resources/Menu_Icons/menu_Add.png"></RibbonButton>
