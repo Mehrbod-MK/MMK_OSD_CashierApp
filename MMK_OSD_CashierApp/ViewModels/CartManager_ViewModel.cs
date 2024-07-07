@@ -150,6 +150,8 @@ namespace MMK_OSD_CashierApp.ViewModels
                         MessageBoxResult.OK,
                         MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign
                         );
+
+                    return;
                 }
 
 
