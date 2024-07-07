@@ -23,6 +23,8 @@ namespace MMK_OSD_CashierApp
     {
         BackgroundWorker worker = new BackgroundWorker();
 
+        bool cancelClose = true;
+
         public Dialog_Worker(BackgroundWorker job, Worker_ViewModel worker_VM)
         {
             // Set binding data context.
@@ -56,7 +58,13 @@ namespace MMK_OSD_CashierApp
         private void Worker_RunWorkerCompleted(object? sender, RunWorkerCompletedEventArgs e)
         {
             // Close dialog.
+            cancelClose = false;
             this.Close();
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            e.Cancel = cancelClose;
         }
     }
 }

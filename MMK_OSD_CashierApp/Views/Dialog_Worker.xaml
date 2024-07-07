@@ -10,7 +10,8 @@
         FlowDirection="RightToLeft"
         WindowStartupLocation="CenterScreen"
         Loaded="Window_Loaded"
-        ShowInTaskbar="False">
+        ShowInTaskbar="False"
+        Closing="Window_Closing">
     <Grid>
 
         <Grid.ColumnDefinitions>
