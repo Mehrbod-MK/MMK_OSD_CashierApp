@@ -31,6 +31,7 @@ namespace MMK_OSD_CashierApp
 
         public const string DB_TABLE_NAME_USERS = @"users";
         public const string DB_TABLE_NAME_PRODUCTS = @"products";
+        public const string DB_TABLE_NAME_PURCHASES = @"purchases";
 
         public const string DB_QUERY_USER_OK = @"DB_QUERY_USER_OK";
         public const string DB_QUERY_ERROR_USER_BAD_CREDENTIALS = @"DB_QUERY_ERROR_USER_BAD_CREDENTIALS";
@@ -248,6 +249,12 @@ namespace MMK_OSD_CashierApp
                                 try
                                 {
                                     await executeTransaction.RollbackAsync();
+
+                                    return new DBResult()
+                                    {
+                                        result = DBResultEnum.DB_ROLLBACKED_TRANSACTION,
+                                        returnValue = null,
+                                    };
                                 }
                                 catch (Exception ex)
                                 {

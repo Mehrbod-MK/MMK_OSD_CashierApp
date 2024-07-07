@@ -9,7 +9,8 @@
         Title="مدیریت سبد خرید مشتری" Height="600" Width="800"
         FlowDirection="RightToLeft"
         WindowStartupLocation="CenterScreen"
-        WindowState="Maximized">
+        WindowState="Maximized"
+        x:Name="Wnd_CartManager">
 
         <Window.Background>
             <ImageBrush ImageSource="../Resources/bkg_ShoppingPattern.png"
@@ -65,7 +66,7 @@
                 </RibbonGroup>
 
                 <RibbonGroup Header="ثبت">
-                    <RibbonButton Label="تأیید نهایی" LargeImageSource="../Resources/Menu_Icons/menu_Submit.png"></RibbonButton>
+                    <RibbonButton Command="{Binding Command_FinalSubmit}" CommandParameter="{Binding ElementName=Wnd_CartManager}" Label="تأیید نهایی" LargeImageSource="../Resources/Menu_Icons/menu_Submit.png"></RibbonButton>
                 </RibbonGroup>
 
             </RibbonTab>
@@ -77,7 +78,8 @@
                 <TextBlock Foreground="Black" FontSize="17" FontWeight="ExtraBold">کد کالا:</TextBlock>
                 <TextBox x:Name="TextBox_Enter_ProductCode" TextChanged="TextBox_Enter_ProductCode_TextChanged" Foreground="Black" FontSize="17" TextAlignment="Center"/>
                 <TextBlock Foreground="Black" FontSize="17" FontWeight="SemiBold">کد ملی مشتری:</TextBlock>
-                <TextBox x:Name="TextBox_Enter_CustomerNationalID" MaxLength="10" TextChanged="TextBox_Enter_CustomerNationalID_TextChanged" Foreground="Black" FontSize="17" TextAlignment="Center"/>
+                <TextBox x:Name="TextBox_Enter_CustomerNationalID" MaxLength="10" TextChanged="TextBox_Enter_CustomerNationalID_TextChanged" Foreground="Black" FontSize="17" TextAlignment="Center"
+                         Text="{Binding Customer_NationalID, UpdateSourceTrigger=PropertyChanged, FallbackValue={x:Null}}"/>
             </StackPanel>
         </GroupBox>
             

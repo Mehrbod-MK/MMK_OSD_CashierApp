@@ -1,8 +1,10 @@
-﻿using MMK_OSD_CashierApp.Models;
+﻿using MMK_OSD_CashierApp.Helpers;
+using MMK_OSD_CashierApp.Models;
 using Org.BouncyCastle.Tls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -26,6 +28,21 @@ namespace MMK_OSD_CashierApp.ViewModels
         private Product? foundProduct;
 
         private ObservableCollection<Product> selectedProducts;
+
+        private string? customer_NationalID;
+
+        public string? Customer_NationalID
+        {
+            get => customer_NationalID;
+            set => SetProperty(ref customer_NationalID, value);
+        }
+
+        private string cashier_NationalID;
+        public string Cashier_NationalID
+        {
+            get => cashier_NationalID;
+            private set => SetProperty(ref cashier_NationalID, value);
+        }
 
         public ObservableCollection<Product> SelectedProducts
         {
@@ -80,6 +97,8 @@ namespace MMK_OSD_CashierApp.ViewModels
             command_RemoveFromCart.InvokeCanExecuteChanged();
             command_RemoveAllCart.InvokeCanExecuteChanged();
 
+            command_FinalSubmit.InvokeCanExecuteChanged();
+
             // Update Cash Values.
             Update_CashValues();
 
@@ -114,6 +133,8 @@ namespace MMK_OSD_CashierApp.ViewModels
             // Update self and remove all.
             command_RemoveFromCart.InvokeCanExecuteChanged();
             command_RemoveAllCart.InvokeCanExecuteChanged();
+
+            command_FinalSubmit.InvokeCanExecuteChanged();
         }
         public bool Allow_RemoveFromCart(object? parameter)
         {
@@ -220,10 +241,128 @@ namespace MMK_OSD_CashierApp.ViewModels
             command_RemoveAllCart.InvokeCanExecuteChanged();
             command_RemoveFromCart.InvokeCanExecuteChanged();
 
+            command_FinalSubmit.InvokeCanExecuteChanged();
+
             // Update Cash Values.
             Update_CashValues();
         }
         public bool Allow_RemoveAllCart(object? parameter)
+        {
+            return SelectedProducts.Count > 0;
+        }
+
+
+        private RelayCommand command_FinalSubmit;
+        public ICommand Command_FinalSubmit => command_FinalSubmit;
+        public void Order_FinalSubmit(object? parameter)
+        {
+            if (parameter is not Window wnd_CartManager)
+                return;
+
+            BackgroundWorker worker_FinalSubmit = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false,
+            };
+
+            Worker_ViewModel vm_Worker_FinalSubmit = new();
+
+            worker_FinalSubmit.DoWork += (sender, e) =>
+            {
+                string customer_NationalID = cashier_NationalID;
+
+                // Hide window.
+                Application.Current.Dispatcher.Invoke(() => wnd_CartManager.IsEnabled = false);
+
+                // Check customer availability.
+                vm_Worker_FinalSubmit.ProgressState = "در حال بررسی اعتبار کد ملی مشتری...";
+                if (Customer_NationalID == null)
+                {
+                    if (MessageBox.Show(
+                        caption: "هشدار",
+                        messageBoxText: "کد ملی مشتری وارد نشده است، در این صورت، تخفیف به ایشان تعلق نمی‌گیرد و تراکنش خرید به نام خود صندوقدار ثبت می‌گردد. آیا مطمئن هستید؟",
+                        button: MessageBoxButton.YesNo,
+                        icon: MessageBoxImage.Warning,
+                        defaultResult: MessageBoxResult.No,
+                        options: MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign
+                        ) == MessageBoxResult.No)
+                        return;
+                }
+                else
+                {
+                    var foundCustomer = /*Task.Run(() =>*/
+                        MainWindow.db.db_Get_User(Customer_NationalID).Result;
+                   /* ).Result*/
+
+                    if (foundCustomer.result == DB.DBResultEnum.DB_OK)
+                    {
+                        if (foundCustomer.returnValue == null)
+                        {
+                            if (MakeMessageBoxes.Display_Warning(
+                                "کد ملی وارد شده در پایگاه داده یافت نشد. آیا مطمئن هستید که بدون کد ملی درست می‌خواهید تراکنش خرید را ثبت کنید؟ در این صورت، تخفیف به مشتری تعلق نگرفته و تراکنش به نام صندوقدار ثبت خواهد شد.\n\nاز این بابت مطمئن هستید؟",
+                                "هشدار عدم اعتبار کد ملی مشتری",
+                                MessageBoxButton.YesNo,
+                                MessageBoxResult.No
+                                ) == MessageBoxResult.No)
+                                return;
+                        }
+
+                        // Get customer's national ID.
+                        if (foundCustomer.returnValue is not User customer)
+                            return;
+                        customer_NationalID = customer.NationalID;
+                    }
+                    else
+                    {
+                        MakeMessageBoxes.Display_Error_DB(foundCustomer.returnValue as Exception);
+                        return;
+                    }
+                }
+
+                // Begin purchase transaction submission in DB.
+                vm_Worker_FinalSubmit.ProgressState = "در حال ثبت تراکنش خرید...";
+                DateTime dt = DateTime.Now;
+                string sqlDateTimeStr = DB.Convert_FromDateTime_ToSQLDateTimeString(dt);
+                var db_WritePurchase = MainWindow.db.sql_Execute_NonQuery
+                ($"INSERT INTO {DB.DB_TABLE_NAME_PURCHASES} " +
+                $"(Customer_NationalID, DateTimeSubmitted, SubmittedBy_NationalID, " +
+                $"Num_ProductsPurchased, Total_Price, Total_Discount, Total_Payment) VALUES (" +
+                $"\'{customer_NationalID}\', \'{sqlDateTimeStr}\', \'{cashier_NationalID}\'," +
+                $"{SelectedProducts.Count}, {total_Price}, {total_Discount}, {total_Payment});").Result;
+
+                vm_Worker_FinalSubmit.ProgressState = "در حال بررسی تراکنش خرید...";
+                if(db_WritePurchase.result == DB.DBResultEnum.DB_ROLLBACKED_TRANSACTION)
+                {
+                    MakeMessageBoxes.Display_Error("به علت خطایی ناشناخته، تراکنش توسط DBMS ثبت نشد. لطفاً لحظاتی بعد مجدداً تلاش کنید.",
+                        "خطای ثبت تراکنش", MessageBoxButton.OK, MessageBoxResult.OK);
+                    return;
+                }
+                else if(db_WritePurchase.result == DB.DBResultEnum.DB_ERROR)
+                {
+                    MakeMessageBoxes.Display_Error_DB(db_WritePurchase.returnValue as Exception);
+                    return;
+                }
+
+                // Successful submission.
+                MakeMessageBoxes.Display_Notification(
+                    "تراکنش با موفقیت در پایگاه داده ثبت شد.",
+                    "موفقیت",
+                    MessageBoxButton.OK,
+                    MessageBoxResult.OK);
+
+            };
+
+            worker_FinalSubmit.RunWorkerCompleted += (sender, e) =>
+            {
+                wnd_CartManager.IsEnabled = true;
+
+                Reset_ViewModel();
+            };
+
+            Dialog_Worker workerDlg_FinalSubmit = new Dialog_Worker(worker_FinalSubmit, vm_Worker_FinalSubmit);
+            workerDlg_FinalSubmit.ShowDialog();
+        }
+        public bool Allow_FinalSubmit(object? parameter)
         {
             return SelectedProducts.Count > 0;
         }
@@ -233,14 +372,32 @@ namespace MMK_OSD_CashierApp.ViewModels
         /// <summary>
         /// Public ctor.
         /// </summary>
-        public CartManager_ViewModel()
+        public CartManager_ViewModel(string cashier_NationalID)
         {
             selectedProducts = new();
+
+            this.cashier_NationalID = cashier_NationalID;
 
             command_AddToCart = new RelayCommand(Order_AddToCart, Allow_AddToCart);
             command_RemoveFromCart = new RelayCommand(Order_RemoveFromCart, Allow_RemoveFromCart);
             command_RemoveAllCart = new RelayCommand(Order_RemoveAllCart, Allow_RemoveAllCart);
             command_RegisterNewCustomer = new RelayCommand(Order_RegisterNewCustomer, Allow_RegisterNewCustomer);
+            command_FinalSubmit = new RelayCommand(Order_FinalSubmit, Allow_FinalSubmit);
+        }
+
+        protected void Reset_ViewModel()
+        {
+            FoundProduct = null;
+            Customer_NationalID = null;
+            SelectedProducts.Clear();
+
+            Update_CashValues();
+
+            command_AddToCart.InvokeCanExecuteChanged();
+            command_RemoveFromCart.InvokeCanExecuteChanged();
+            command_RemoveAllCart.InvokeCanExecuteChanged();
+            command_RegisterNewCustomer.InvokeCanExecuteChanged();
+            command_FinalSubmit.InvokeCanExecuteChanged();
         }
 
         public void Update_CashValues()

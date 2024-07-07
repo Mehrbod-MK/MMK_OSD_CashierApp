@@ -72,12 +72,13 @@ namespace MMK_OSD_CashierApp
 
             Worker_ViewModel wvm_LoginPersonnel = new Worker_ViewModel();
 
+            string username = "", password = "";
+
             // Login logic.
             worker_LoginPersonnel.DoWork += (sender, e) =>
             {
                 // Get username and convert password to SHA-1 hashed string.
                 wvm_LoginPersonnel.ProgressState = "در حال رمزنگاری...";
-                string username = "", password = "";
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     username = TextBox_Personnel_Username.Text;
@@ -175,7 +176,7 @@ namespace MMK_OSD_CashierApp
                 {
                     this.Hide();
 
-                    Views.Window_Dashboard dashboard = new(new Dashboard_ViewModel());
+                    Views.Window_Dashboard dashboard = new(new Dashboard_ViewModel(username));
                     dashboard.Show();
                 }
             };
