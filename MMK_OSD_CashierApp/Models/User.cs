@@ -15,7 +15,7 @@ namespace MMK_OSD_CashierApp.Models
         private string password = string.Empty;
         private string? optionalUsername;
         private string? firstName;
-        private string lastName = string.Empty;
+        private string? lastName = null;
         private uint roleFlags;
         private string? email;
         private DateTime registerDateTime;
@@ -45,7 +45,7 @@ namespace MMK_OSD_CashierApp.Models
             get => firstName;
             set => SetProperty(ref firstName, value);
         }
-        public string LastName
+        public string? LastName
         {
             get => lastName;
             set => SetProperty(ref lastName, value);

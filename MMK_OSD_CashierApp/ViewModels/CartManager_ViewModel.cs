@@ -1,4 +1,5 @@
 ﻿using MMK_OSD_CashierApp.Models;
+using Org.BouncyCastle.Tls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -122,6 +123,91 @@ namespace MMK_OSD_CashierApp.ViewModels
             return SelectedProducts.Count > 0;
         }
 
+        private RelayCommand command_RegisterNewCustomer;
+        public ICommand Command_RegisterNewCustomer => command_RegisterNewCustomer;
+        private bool can_RegisterNewCustomer = false;
+        public bool Can_RegisterNewCustomer
+        {
+            get => can_RegisterNewCustomer;
+            private set => SetProperty(ref can_RegisterNewCustomer, value);
+        }
+        public void Order_RegisterNewCustomer(object? parameter)
+        {
+            if (parameter is not TextBox txtBox_NationalID)
+                return;
+
+            var newCustomer = MainWindow.db.db_Register_User(txtBox_NationalID.Text, DB.DB_Roles.DB_ROLE_Customer);
+
+            if(newCustomer.result == DB.DBResultEnum.DB_OK)
+            {
+                if(newCustomer.returnValue == null)
+                {
+                    MessageBox.Show(
+                        "مشتری قبلاً در سامانه ثبت نام شده است.",
+                        "هشدار",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning,
+                        MessageBoxResult.OK,
+                        MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign
+                        );
+                }
+
+
+                if (newCustomer.returnValue is not User customer)
+                {
+                    MessageBox.Show("خطای ثبت مشتری در پایگاه داده!",
+                        "خطای پایگاه داده",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error,
+                        MessageBoxResult.OK,
+                        MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign);
+
+                    return;
+                }
+
+                MessageBox.Show(
+                    $"ثبت نام مشتری با موفقیت انجام شد.\n\nکد ملی:\t\t{txtBox_NationalID.Text}\nرمز عبور =\t\t{txtBox_NationalID.Text}",
+                    "موفقیت در ثبت نام مشتری!",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Asterisk,
+                    MessageBoxResult.OK,
+                    MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign
+                    );
+            }
+            else if(newCustomer.result == DB.DBResultEnum.DB_ERROR)
+            {
+                if(newCustomer.returnValue is not Exception ex)
+                {
+                    MessageBox.Show(
+                        "خطای ناشناخته.",
+                        "خطا",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Stop,
+                        MessageBoxResult.OK,
+                        MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign
+                        );
+
+                    return;
+                }
+
+                MessageBox.Show(
+                        "متأسفانه، خطای ذیل در ثبت نام مشتری به وجود آمد:\n\n" + ex.ToString(),
+                        "خطای ثبت نام مشتری",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error,
+                        MessageBoxResult.OK,
+                        MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign
+                        );
+            }
+        }
+        public bool Allow_RegisterNewCustomer(object? parameter)
+        {
+            if (parameter is not TextBox txtBox_NationalID)
+                return false;
+
+            return txtBox_NationalID.Text.Length == 10;
+        }
+
         private RelayCommand command_RemoveAllCart;
         public ICommand Command_RemoveAllCart => command_RemoveAllCart;
         public void Order_RemoveAllCart(object? parameter)
@@ -152,6 +238,7 @@ namespace MMK_OSD_CashierApp.ViewModels
             command_AddToCart = new RelayCommand(Order_AddToCart, Allow_AddToCart);
             command_RemoveFromCart = new RelayCommand(Order_RemoveFromCart, Allow_RemoveFromCart);
             command_RemoveAllCart = new RelayCommand(Order_RemoveAllCart, Allow_RemoveAllCart);
+            command_RegisterNewCustomer = new RelayCommand(Order_RegisterNewCustomer, Allow_RegisterNewCustomer);
         }
 
         public void Update_CashValues()

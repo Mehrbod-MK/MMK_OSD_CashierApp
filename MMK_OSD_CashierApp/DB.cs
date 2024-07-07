@@ -14,6 +14,8 @@ using MMK_OSD_CashierApp.Models;
 using MySql.Data;
 using MySql.Data.MySqlClient;
 using MySqlX.XDevAPI.Common;
+using Org.BouncyCastle.Asn1.Mozilla;
+using Org.BouncyCastle.Security.Certificates;
 
 namespace MMK_OSD_CashierApp
 {
@@ -74,6 +76,8 @@ namespace MMK_OSD_CashierApp
             DB_ERROR,
 
             DB_NOTIFY_NO_DBADMIN_USER,
+
+            DB_ROLLBACKED_TRANSACTION,
         }
 
         [Flags]
@@ -215,6 +219,65 @@ namespace MMK_OSD_CashierApp
             }
         }
 
+        public async Task<DBResult> sql_Execute_NonQuery(string nonQueryCommand)
+        {
+            try
+            {
+                int rowsAffected = -1;
+
+                using (MySqlConnection connection = new MySqlConnection(get_RecentConnectionString()))
+                {
+                    connection.ConfigureAwait(false);
+                    await connection.OpenAsync();
+
+                    using (var executeTransaction = await connection.BeginTransactionAsync())
+                    {
+                        executeTransaction.ConfigureAwait(false);
+
+                        using (MySqlCommand command = new(nonQueryCommand, connection, executeTransaction))
+                        {
+                            command.ConfigureAwait(false);
+                            rowsAffected = await command.ExecuteNonQueryAsync();
+
+                            try
+                            {
+                                await executeTransaction.CommitAsync();
+                            }
+                            catch (Exception)
+                            {
+                                try
+                                {
+                                    await executeTransaction.RollbackAsync();
+                                }
+                                catch (Exception ex)
+                                {
+                                    return new DBResult()
+                                    {
+                                        result = DBResultEnum.DB_ERROR,
+                                        returnValue = ex
+                                    };
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_OK,
+                    returnValue = rowsAffected,
+                };
+            }
+            catch(Exception ex)
+            {
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_ERROR,
+                    returnValue = ex,
+                };
+            }
+        }
+
         public async Task<DBResult> sql_End_Query(MySqlDataReader? dataReaderToClose)
         {
             try
@@ -317,13 +380,13 @@ namespace MMK_OSD_CashierApp
                         LoginPassword = (string)dbResult_QueryUser["LoginPassword"],
                         OptionalUserName = ConvertFromDBVal<string?>(dbResult_QueryUser["OptionalUsername"]),
                         FirstName = ConvertFromDBVal<string?>(dbResult_QueryUser["FirstName"]),
-                        LastName = (string)dbResult_QueryUser["LastName"],
+                        LastName = ConvertFromDBVal<string?>(dbResult_QueryUser["LastName"]),
                         RoleFlags = (uint)dbResult_QueryUser["RoleFlags"],
                         Email = ConvertFromDBVal<string?>(dbResult_QueryUser["Email"]),
                         RegisterDateTime = dbResult_QueryUser.GetDateTime("RegisterDateTime"),
-                        /*LastLoginDateTime = (await dbResult_QueryUser.IsDBNullAsync("LastLoginDateTime")) 
-                                        ? dbResult_QueryUser.GetDateTime("LastLoginDateTime") 
-                                        : null,*/
+                        LastLoginDateTime = (await dbResult_QueryUser.IsDBNullAsync("LastLoginDateTime")) 
+                                        ? null 
+                                        : dbResult_QueryUser.GetDateTime("LastLoginDateTime"),
                     };
                 }
 
@@ -336,6 +399,75 @@ namespace MMK_OSD_CashierApp
                 };
             }
             catch (Exception ex)
+            {
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_ERROR,
+                    returnValue = ex,
+                };
+            }
+        }
+
+        /// <summary>
+        /// Checks if a user with a specific NationalID exists in DB.
+        /// </summary>
+        /// <param name="nationalID">User's national ID (Primay Key).</param>
+        /// <returns></returns>
+        /// <exception cref="MySqlException">Occurs when a DB Error happens.</exception>
+        protected async Task<DBResult> db_Check_User_Exists(string nationalID, DB_Roles rolesToCheck)
+        {
+            var queryUserResult = _THROW_DBRESULT<User?>(
+                await db_Get_User(nationalID)
+                );
+
+            if (queryUserResult == null)
+                return new DBResult() { result = DBResultEnum.DB_OK, returnValue = null };
+
+            if((queryUserResult.RoleFlags |= (uint)rolesToCheck) == 0)
+            {
+                return new DBResult() { result = DBResultEnum.DB_OK, returnValue = null };
+            }
+
+            return new DBResult()
+            {
+                result = DBResultEnum.DB_OK,
+                returnValue = queryUserResult
+            };
+        }
+
+        public DBResult db_Register_User(string nationalID, DB_Roles desiredRoles)
+        {
+            try
+            {
+                var query_CheckUserExists = _THROW_DBRESULT<User?>
+                    (Task.Run(() => db_Check_User_Exists(nationalID, desiredRoles)).Result);
+
+                // User was found, return a null user as a result.
+                if(query_CheckUserExists != null)
+                {
+                    return new DBResult()
+                    {
+                        result = DBResultEnum.DB_OK,
+                        returnValue = null
+                    };
+                }
+
+                // User was not found, create a new one.
+                string hashedPswrd = Hash(nationalID);
+                DateTime dtNow = DateTime.Now;
+                var writeQuery_RegisterUser = _THROW_DBRESULT<int>
+                    (Task.Run(() => sql_Execute_NonQuery($"" +
+                    $"INSERT INTO {schema}.{DB_TABLE_NAME_USERS} (NationalID, LoginPassword, RoleFlags, RegisterDateTime) VALUES" +
+                    $"(\'{nationalID}\', \'{hashedPswrd}\', {(uint)DB_Roles.DB_ROLE_Customer}, \'{Convert_FromDateTime_ToSQLDateTimeString(dtNow)}\');")).Result);
+
+                // Return the newly submitted user object.
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_OK,
+                    returnValue = new User() { NationalID = nationalID, LoginPassword = hashedPswrd, RoleFlags = (uint)DB_Roles.DB_ROLE_Customer }
+                };
+            }
+            catch(Exception ex)
             {
                 return new DBResult()
                 {
@@ -361,6 +493,9 @@ namespace MMK_OSD_CashierApp
 
         public static string Hash(string input)
             => Convert.ToHexString(SHA1.HashData(Encoding.UTF8.GetBytes(input)));
+
+        public static string Convert_FromDateTime_ToSQLDateTimeString(DateTime dt)
+            => $"{dt.Year:0000}-{dt.Month:00}-{dt.Day:00} {dt.Hour:00}:{dt.Minute:00}:{dt.Second:00}";
 
         public static T? _THROW_DBRESULT<T>(DBResult dBResult)
         {

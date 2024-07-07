@@ -55,7 +55,7 @@
                 <RibbonSeparator/>
 
                 <RibbonGroup Header="مشتری">
-                    <RibbonButton Label="ثبت نام مشتری جدید" LargeImageSource="../Resources/Menu_Icons/menu_Customers_Add.png"></RibbonButton>
+                    <RibbonButton Command="{Binding Path=Command_RegisterNewCustomer}" CommandParameter="{Binding ElementName=TextBox_Enter_CustomerNationalID}" Label="ثبت نام مشتری جدید" LargeImageSource="../Resources/Menu_Icons/menu_Customers_Add.png"></RibbonButton>
                     <RibbonButton Label="استعلام کد ملی مشتری وارد شده" LargeImageSource="../Resources/Menu_Icons/menu_Customers_Ack.png"></RibbonButton>
                 </RibbonGroup>
 
@@ -77,7 +77,7 @@
                 <TextBlock Foreground="Black" FontSize="17" FontWeight="ExtraBold">کد کالا:</TextBlock>
                 <TextBox x:Name="TextBox_Enter_ProductCode" TextChanged="TextBox_Enter_ProductCode_TextChanged" Foreground="Black" FontSize="17" TextAlignment="Center"/>
                 <TextBlock Foreground="Black" FontSize="17" FontWeight="SemiBold">کد ملی مشتری:</TextBlock>
-                <TextBox x:Name="TextBox_Enter_CustomerNationalID" Foreground="Black" FontSize="17" TextAlignment="Center"/>
+                <TextBox x:Name="TextBox_Enter_CustomerNationalID" MaxLength="10" TextChanged="TextBox_Enter_CustomerNationalID_TextChanged" Foreground="Black" FontSize="17" TextAlignment="Center"/>
             </StackPanel>
         </GroupBox>
             

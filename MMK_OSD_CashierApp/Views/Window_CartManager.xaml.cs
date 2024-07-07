@@ -76,5 +76,15 @@ namespace MMK_OSD_CashierApp.Views
 
             command_RemoveAll.InvokeCanExecuteChanged();
         }
+
+        private void TextBox_Enter_CustomerNationalID_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (this.DataContext is not CartManager_ViewModel vm_CartMgr)
+                return;
+            if (vm_CartMgr.Command_RegisterNewCustomer is not RelayCommand cmd)
+                return;
+
+            cmd.InvokeCanExecuteChanged();
+        }
     }
 }
