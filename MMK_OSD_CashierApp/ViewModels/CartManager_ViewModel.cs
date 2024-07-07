@@ -350,13 +350,15 @@ namespace MMK_OSD_CashierApp.ViewModels
                     MessageBoxButton.OK,
                     MessageBoxResult.OK);
 
+                e.Result = true;
             };
 
             worker_FinalSubmit.RunWorkerCompleted += (sender, e) =>
             {
                 wnd_CartManager.IsEnabled = true;
 
-                Reset_ViewModel();
+                if(e.Result != null && (bool)e.Result == true)
+                    Reset_ViewModel();
             };
 
             Dialog_Worker workerDlg_FinalSubmit = new Dialog_Worker(worker_FinalSubmit, vm_Worker_FinalSubmit);
@@ -387,7 +389,6 @@ namespace MMK_OSD_CashierApp.ViewModels
 
         protected void Reset_ViewModel()
         {
-            FoundProduct = null;
             Customer_NationalID = null;
             SelectedProducts.Clear();
 

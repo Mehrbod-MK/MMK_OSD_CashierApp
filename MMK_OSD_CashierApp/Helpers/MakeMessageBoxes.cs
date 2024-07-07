@@ -20,7 +20,7 @@ namespace MMK_OSD_CashierApp.Helpers
                 buttons,
                 MessageBoxImage.Error,
                 defaultResponse,
-                MessageBoxOptions.RightAlign | MessageBoxOptions.RightAlign
+                MessageBoxOptions.RightAlign | MessageBoxOptions.RtlReading
                 );
         }
 
@@ -32,7 +32,7 @@ namespace MMK_OSD_CashierApp.Helpers
                 buttons,
                 MessageBoxImage.Warning,
                 defaultResponse,
-                MessageBoxOptions.RightAlign | MessageBoxOptions.RightAlign
+                MessageBoxOptions.RightAlign | MessageBoxOptions.RtlReading
                 );
         }
 
@@ -44,7 +44,7 @@ namespace MMK_OSD_CashierApp.Helpers
                 buttons,
                 MessageBoxImage.Information,
                 defaultResponse,
-                MessageBoxOptions.RightAlign | MessageBoxOptions.RightAlign
+                MessageBoxOptions.RightAlign | MessageBoxOptions.RtlReading
                 );
         }
 
@@ -58,7 +58,7 @@ namespace MMK_OSD_CashierApp.Helpers
                 MessageBoxButton.OK,
                 MessageBoxImage.Warning,
                 MessageBoxResult.OK,
-                MessageBoxOptions.RightAlign | MessageBoxOptions.RightAlign
+                MessageBoxOptions.RightAlign | MessageBoxOptions.RtlReading
                 );
             }
             else
