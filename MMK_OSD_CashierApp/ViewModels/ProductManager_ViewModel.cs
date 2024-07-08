@@ -108,11 +108,27 @@ namespace MMK_OSD_CashierApp.ViewModels
         public ICommand Command_SearchProducts => command_SearchProducts;
         public void Order_SearchProducts(object? parameter)
         {
+               
+        }
+        public bool Allow_SearchProducts(object? parameter)
+        {
+            return true;
+        }
+
+        public ProductManager_ViewModel(User loggedIn_User)
+        {
+            queriedProducts = new ObservableCollection<Product>();
+
+            command_SearchProducts = new RelayCommand(Order_SearchProducts, Allow_SearchProducts);
+        }
+
+        public string Generate_SearchProductConditionalQuery()
+        {
             string searchQuery = $"SELECT * FROM {DB.DB_TABLE_NAME_PRODUCTS} WHERE ";
 
-            if(!string.IsNullOrEmpty(search_ProductID) && !uint.TryParse(search_ProductID, out uint prodID))
+            if (!string.IsNullOrEmpty(search_ProductID) && !uint.TryParse(search_ProductID, out uint prodID))
             {
-                if(contains_ProductID == true)
+                if (contains_ProductID == true)
                 {
                     searchQuery += $"ProductID LIKE \'%{prodID}%\' AND ";
                 }
@@ -140,7 +156,7 @@ namespace MMK_OSD_CashierApp.ViewModels
                 {
                     searchQuery += $"Price >= \'%{price}%\' AND ";
                 }
-                if(maximum_ProductPrice == true)
+                if (maximum_ProductPrice == true)
                 {
                     searchQuery += $"Price <= {price} AND ";
                 }
@@ -176,18 +192,7 @@ namespace MMK_OSD_CashierApp.ViewModels
             // End search query for AND operators.
             searchQuery += "TRUE;";
 
-            
-        }
-        public bool Allow_SearchProducts(object? parameter)
-        {
-            return true;
-        }
-
-        public ProductManager_ViewModel(User loggedIn_User)
-        {
-            queriedProducts = new ObservableCollection<Product>();
-
-            command_SearchProducts = new RelayCommand(Order_SearchProducts, Allow_SearchProducts);
+            return searchQuery;
         }
     }
 }
