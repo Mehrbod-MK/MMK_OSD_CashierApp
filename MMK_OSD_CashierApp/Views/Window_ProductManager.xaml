@@ -1,0 +1,110 @@
+﻿<Window x:Class="MMK_OSD_CashierApp.Views.Window_ProductManager"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MMK_OSD_CashierApp.Views"
+        mc:Ignorable="d"
+        Title="مدیریت کالاها" Height="450" Width="800"
+        x:Name="Window_ProductManagement"
+        FlowDirection="RightToLeft"
+        WindowState="Maximized">
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.5*"/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="0.5*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="143"/>
+            <RowDefinition MaxHeight="256"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Ribbon Grid.ColumnSpan="3" Title="کنترل‌های مدیریت کالاها">
+
+            <RibbonTab>
+
+                <RibbonGroup Header="جستجو">
+                    <RibbonButton Label="جستجوی کالا" LargeImageSource="../Resources/Menu_Icons/menu_Icon_SearchProduct.png" />
+                </RibbonGroup>
+
+                <RibbonGroup Header="مدیریت">
+                    <RibbonButton Label="ثبت کالای جدید" LargeImageSource="../Resources/Menu_Icons/menu_Product_Add.png"/>
+                    <RibbonButton Label="ویرایش کالاهای انتخابی" LargeImageSource="../Resources/Menu_Icons/menu_Product_Edit.png"/>
+                    <RibbonButton Label="حذف کالاهای انتخابی" LargeImageSource="../Resources/Menu_Icons/menu_Product_Remove.png"/>
+                </RibbonGroup>
+
+                <RibbonGroup Header="پایگاه داده">
+                    <RibbonButton Label="تأیید نهایی" LargeImageSource="../Resources/Menu_Icons/menu_Submit.png"/>
+                    <RibbonButton Label="لغو تغییرات" LargeImageSource="../Resources/ico_MsgBox_Error.png"/>
+                </RibbonGroup>
+
+            </RibbonTab>
+            
+        </Ribbon>
+
+        <GroupBox Grid.Column="1" Grid.Row="1" Header="پارامترهای جستجو">
+            <Grid>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" FontSize="14" TextAlignment="Center">شماره کالا:</TextBlock>
+                <TextBox Text="{Binding Search_ProductID, UpdateSourceTrigger=PropertyChanged}" x:Name="TextBox_Product_Code" Grid.Row="0" Grid.Column="1"/>
+                <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding Contains_ProductID, UpdateSourceTrigger=PropertyChanged}" x:Name="CheckBox_Contains_Code" Content="شامل"/>
+                </StackPanel>
+                <TextBlock Grid.Row="1" FontSize="14" TextAlignment="Center">نام محصول:</TextBlock>
+                <TextBox Text="{Binding Search_ProductName, UpdateSourceTrigger=PropertyChanged}" x:Name="TextBox_Product_Name" Grid.Row="1" Grid.Column="1"/>
+                <StackPanel Grid.Row="1" Grid.Column="3" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding Contains_ProductName, UpdateSourceTrigger=PropertyChanged}" x:Name="CheckBox_Contains_Name" Content="شامل"/>
+                </StackPanel>
+                <TextBlock Grid.Row="2" FontSize="14" TextAlignment="Center">قیمت:</TextBlock>
+                <TextBox Text="{Binding Search_ProductPrice, UpdateSourceTrigger=PropertyChanged}" x:Name="TextBox_Product_Price" Grid.Row="2" Grid.Column="1"/>
+                <StackPanel Grid.Row="2" Grid.Column="3" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding Minimum_ProductPrice, UpdateSourceTrigger=PropertyChanged}" x:Name="CheckBox_Minimum_Price" Content="حداقل" Margin="0 0 10 0"/>
+                    <CheckBox IsChecked="{Binding Maximum_ProductPrice, UpdateSourceTrigger=PropertyChanged}" x:Name="CheckBox_Maximum_Price" Content="حداکثر"/>
+                </StackPanel>
+                <TextBlock Grid.Row="3" FontSize="14" TextAlignment="Center">شرکت عرضه‌کننده:</TextBlock>
+                <TextBox Text="{Binding Search_ProductVendor, UpdateSourceTrigger=PropertyChanged}" x:Name="TextBox_Product_Vendor" Grid.Row="3" Grid.Column="1"/>
+                <StackPanel Grid.Row="3" Grid.Column="3" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding Contains_ProductVendor, UpdateSourceTrigger=PropertyChanged}" x:Name="CheckBox_Contains_Vendor" Content="شامل"/>
+                </StackPanel>
+                <CheckBox IsChecked="{Binding Display_Unavailables, UpdateSourceTrigger=PropertyChanged}" x:Name="CheckBox_Unavailables" Grid.Row="5" FontSize="14" Content="ناموجودها"/>
+                <CheckBox IsChecked="{Binding Display_AboutToRunOuts, UpdateSourceTrigger=PropertyChanged}" x:Name="CheckBox_AboutToRunOut" Grid.Row="5" FontSize="14" Grid.Column="1" Content="نزدیک به اتمام"/>
+                <CheckBox IsChecked="{Binding Display_NoPhotos, UpdateSourceTrigger=PropertyChanged}" x:Name="CheckBox_NoPhoto" Grid.Row="5" FontSize="14" Grid.Column="2" Content="بدون تصویر"/>
+
+            </Grid>
+        </GroupBox>
+
+        <ListView Grid.Row="2" Grid.ColumnSpan="3" ItemsSource="{Binding QueriedProducts, UpdateSourceTrigger=PropertyChanged}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="شماره کالا" Width="100"/>
+                    <GridViewColumn Header="نام کالا" Width="100"/>
+                    <GridViewColumn Header="قیمت" Width="100"/>
+                    <GridViewColumn Header="شرکت عرضه‌کننده" Width="100"/>
+                    <GridViewColumn Header="تاریخ ثبت" Width="100"/>
+                    <GridViewColumn Header="موجودی در انبار" Width="100"/>
+                    <GridViewColumn Header="تصویر کالا" Width="100"/>
+                </GridView>
+            </ListView.View>
+            
+        </ListView>
+            
+    </Grid>
+</Window>

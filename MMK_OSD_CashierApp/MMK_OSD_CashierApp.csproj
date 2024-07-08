@@ -34,6 +34,9 @@
     <None Remove="Resources\Menu_Icons\menu_Icon_Tips_Large.png" />
     <None Remove="Resources\Menu_Icons\menu_MgrCustCart_Load.png" />
     <None Remove="Resources\Menu_Icons\menu_MgrCustCart_New.png" />
+    <None Remove="Resources\Menu_Icons\menu_Product_Add.png" />
+    <None Remove="Resources\Menu_Icons\menu_Product_Edit.png" />
+    <None Remove="Resources\Menu_Icons\menu_Product_Remove.png" />
     <None Remove="Resources\Menu_Icons\menu_Receipt.png" />
     <None Remove="Resources\Menu_Icons\menu_Receipt_View.png" />
     <None Remove="Resources\Menu_Icons\menu_Remove.png" />
@@ -67,6 +70,7 @@
     <Resource Include="Resources\Menu_Icons\menu_Icon_Tips_Large.png" />
     <Resource Include="Resources\Menu_Icons\menu_MgrCustCart_Load.png" />
     <Resource Include="Resources\Menu_Icons\menu_MgrCustCart_New.png" />
+    <Resource Include="Resources\Menu_Icons\menu_Product_Edit.png" />
     <Resource Include="Resources\Menu_Icons\menu_Receipt.png" />
     <Resource Include="Resources\Menu_Icons\menu_Receipt_View.png" />
     <Resource Include="Resources\Menu_Icons\menu_Remove.png" />

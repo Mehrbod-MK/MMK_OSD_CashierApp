@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:MMK_OSD_CashierApp"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        
     </Application.Resources>
 </Application>
