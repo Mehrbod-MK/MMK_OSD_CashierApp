@@ -1,10 +1,13 @@
-﻿using MMK_OSD_CashierApp.Models;
+﻿using MMK_OSD_CashierApp.Helpers;
+using MMK_OSD_CashierApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -48,56 +51,56 @@ namespace MMK_OSD_CashierApp.ViewModels
             set => SetProperty(ref search_ProductVendor, value);
         }
 
-        private bool? contains_ProductID;
+        private bool? contains_ProductID = false;
         public bool? Contains_ProductID
         {
             get => contains_ProductID;
             set => SetProperty(ref contains_ProductID, value);
         }
 
-        private bool? contains_ProductName;
+        private bool? contains_ProductName = false;
         public bool? Contains_ProductName
         {
             get => contains_ProductName;
             set => SetProperty(ref contains_ProductName, value);
         }
 
-        private bool? minimum_ProductPrice;
+        private bool? minimum_ProductPrice = false;
         public bool? Minimum_ProductPrice
         {
             get => minimum_ProductPrice;
             set => SetProperty(ref minimum_ProductPrice, value);
         }
 
-        private bool? maximum_ProductPrice;
+        private bool? maximum_ProductPrice = false;
         public bool? Maximum_ProductPrice
         {
             get => maximum_ProductPrice;
             set => SetProperty(ref maximum_ProductPrice, value);
         }
 
-        private bool? contains_ProductVendor;
+        private bool? contains_ProductVendor = false;
         public bool? Contains_ProductVendor
         {
             get => contains_ProductVendor;
             set => SetProperty(ref contains_ProductVendor, value);
         }
 
-        private bool? display_Unavailables;
+        private bool? display_Unavailables = false;
         public bool? Display_Unavailables
         {
             get => display_Unavailables;
             set => SetProperty(ref display_Unavailables, value);
         }
 
-        private bool? display_AboutToRunOuts;
+        private bool? display_AboutToRunOuts = false;
         public bool? Display_AboutToRunOuts
         {
             get => display_AboutToRunOuts;
             set => SetProperty(ref display_AboutToRunOuts, value);
         }
 
-        private bool? display_NoPhotos;
+        private bool? display_NoPhotos = false;
         public bool? Display_NoPhotos
         {
             get => display_NoPhotos;
@@ -108,7 +111,59 @@ namespace MMK_OSD_CashierApp.ViewModels
         public ICommand Command_SearchProducts => command_SearchProducts;
         public void Order_SearchProducts(object? parameter)
         {
-               
+            if (parameter is not Window wnd_ProductManager)
+                return;
+
+            Worker_ViewModel vm_Worker = new();
+
+            BackgroundWorker worker_SearchProducts = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false,
+            };
+
+            worker_SearchProducts.DoWork += (sender, e) =>
+            {
+                try
+                {
+                    vm_Worker.ProgressState = "در حال ساخت کوئری...";
+
+                    string productsSearchQuery = Generate_SearchProductConditionalQuery();
+
+                    vm_Worker.ProgressState = "در حال جستجوی پایگاه داده...";
+
+                    var resultOfSearch = DB._THROW_DBRESULT<List<Product>>(
+                        MainWindow.db.db_Get_Products(productsSearchQuery).Result
+                        );
+
+                    if (resultOfSearch == null)
+                        throw new NullReferenceException("پاسخی از سوی پایگاه داده یافت نشد.");
+
+                    if (resultOfSearch.Count == 0)
+                    {
+                        MakeMessageBoxes.Display_Notification(
+                            "",
+                            "جستجو نتیجه‌ای در بر نداشت.",
+                            System.Windows.MessageBoxButton.OK,
+                            System.Windows.MessageBoxResult.OK
+                            );
+
+                        return;
+                    }
+
+                    // Application.Current.Dispatcher.Invoke(() => QueriedProducts = new ObservableCollection<Product>(resultOfSearch));
+                    QueriedProducts = new ObservableCollection<Product>(resultOfSearch);
+                }
+                catch (Exception ex)
+                {
+                    MakeMessageBoxes.Display_Error_DB(ex);
+                }
+            };
+
+            wnd_ProductManager.IsEnabled = false;
+            Dialog_Worker workerDlg = new(worker_SearchProducts, vm_Worker);
+            workerDlg.ShowDialog();
+            wnd_ProductManager.IsEnabled = true;
         }
         public bool Allow_SearchProducts(object? parameter)
         {

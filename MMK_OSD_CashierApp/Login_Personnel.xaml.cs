@@ -187,7 +187,7 @@ namespace MMK_OSD_CashierApp
                     // Product Manager View.
                     if ((foundUser.RoleFlags | (uint)DB.DB_Roles.DB_ROLE_InventoryManager) != 0)
                     {
-                        Views.Window_ProductManager productManager = new();
+                        Views.Window_ProductManager productManager = new(new ProductManager_ViewModel(foundUser));
                         productManager.Show();
                     }
                 }

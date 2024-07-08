@@ -4,11 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MMK_OSD_CashierApp.Views"
+        xmlns:converters="clr-namespace:MMK_OSD_CashierApp.ViewModels"
         mc:Ignorable="d"
         Title="مدیریت کالاها" Height="450" Width="800"
         x:Name="Window_ProductManagement"
         FlowDirection="RightToLeft"
         WindowState="Maximized">
+
+    <Window.Resources>
+        <converters:FromDateTime_ToPersianLongDateString x:Key="Converter_FromDateTime_ToPersianLongDateString"/>
+    </Window.Resources>
+    
     <Grid>
 
         <Grid.ColumnDefinitions>
@@ -27,7 +33,7 @@
             <RibbonTab>
 
                 <RibbonGroup Header="جستجو">
-                    <RibbonButton Label="جستجوی کالا" LargeImageSource="../Resources/Menu_Icons/menu_Icon_SearchProduct.png" />
+                    <RibbonButton Command="{Binding Command_SearchProducts}" CommandParameter="{Binding ElementName=Window_ProductManagement}" Label="جستجوی کالا" LargeImageSource="../Resources/Menu_Icons/menu_Icon_SearchProduct.png" />
                 </RibbonGroup>
 
                 <RibbonGroup Header="مدیریت">
@@ -55,12 +61,12 @@
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
+                    <RowDefinition MaxHeight="25"/>
+                    <RowDefinition MaxHeight="25"/>
+                    <RowDefinition MaxHeight="25"/>
+                    <RowDefinition MaxHeight="25"/>
+                    <RowDefinition MaxHeight="25"/>
+                    <RowDefinition MaxHeight="25"/>
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0" FontSize="14" TextAlignment="Center">شماره کالا:</TextBlock>
@@ -94,11 +100,11 @@
         <ListView Grid.Row="2" Grid.ColumnSpan="3" ItemsSource="{Binding QueriedProducts, UpdateSourceTrigger=PropertyChanged}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="شماره کالا" Width="100"/>
-                    <GridViewColumn Header="نام کالا" Width="100"/>
-                    <GridViewColumn Header="قیمت" Width="100"/>
-                    <GridViewColumn Header="شرکت عرضه‌کننده" Width="100"/>
-                    <GridViewColumn Header="تاریخ ثبت" Width="100"/>
+                    <GridViewColumn Header="شماره کالا" Width="100" DisplayMemberBinding="{Binding ProductID, UpdateSourceTrigger=PropertyChanged}"/>
+                    <GridViewColumn Header="نام کالا" Width="100" DisplayMemberBinding="{Binding ProductName, UpdateSourceTrigger=PropertyChanged}"/>
+                    <GridViewColumn Header="قیمت" Width="100" DisplayMemberBinding="{Binding Price, UpdateSourceTrigger=PropertyChanged}"/>
+                    <GridViewColumn Header="شرکت عرضه‌کننده" Width="100" DisplayMemberBinding="{Binding Vendor, UpdateSourceTrigger=PropertyChanged}"/>
+                    <GridViewColumn Header="تاریخ ثبت" Width="100" DisplayMemberBinding="{Binding DateTimeSubmitted, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Converter_FromDateTime_ToPersianLongDateString}}"/>
                     <GridViewColumn Header="موجودی در انبار" Width="100"/>
                     <GridViewColumn Header="تصویر کالا" Width="100"/>
                 </GridView>

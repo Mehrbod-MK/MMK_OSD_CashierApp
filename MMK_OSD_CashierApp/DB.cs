@@ -484,6 +484,64 @@ namespace MMK_OSD_CashierApp
             }
         }
 
+        public async Task<DBResult> db_Get_Products(string conditionalQuery)
+        {
+            try
+            {
+                MySqlDataReader? dbResult_QueryProduct =
+                _THROW_DBRESULT<MySqlDataReader?>(await sql_Execute_Query(conditionalQuery));
+
+                List<Product> foundProducts = new List<Product>();
+
+                if (dbResult_QueryProduct != null && dbResult_QueryProduct.HasRows)
+                {
+                    while (await dbResult_QueryProduct.ReadAsync())
+                    {
+                        Product product;
+
+                        product = new Product()
+                        {
+                            ProductID = (uint)dbResult_QueryProduct["ProductID"],
+                            ProductName = (string)dbResult_QueryProduct["ProductName"],
+                            Price = (ulong)dbResult_QueryProduct["Price"],
+                            Vendor = ConvertFromDBVal<string?>(dbResult_QueryProduct["Vendor"]),
+                            DateTimeSubmitted = dbResult_QueryProduct.GetDateTime("DateSubmitted"),
+                            Quantity = (uint)dbResult_QueryProduct["Quantity"],
+                        };
+
+                        // Set thumbnail image.
+                        string? thumbImagePath = ConvertFromDBVal<string?>(dbResult_QueryProduct["ThumbImagePath"]);
+                        if (thumbImagePath != null)
+                        {
+                            product.ThumbImagePath = Path.Combine(Environment.CurrentDirectory, thumbImagePath);
+                        }
+                        else
+                        {
+                            product.ThumbImagePath = "../Resources/productIcon.png";
+                        }
+
+                        foundProducts.Add(product);
+                    }
+                }
+
+                await sql_End_Query(dbResult_QueryProduct);
+
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_OK,
+                    returnValue = foundProducts,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_ERROR,
+                    returnValue = ex,
+                };
+            }
+        }
+
         public static string SecureStringToString(SecureString value)
         {
             IntPtr bstr = Marshal.SecureStringToBSTR(value);

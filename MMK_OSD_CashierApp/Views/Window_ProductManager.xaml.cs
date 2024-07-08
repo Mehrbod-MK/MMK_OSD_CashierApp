@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MMK_OSD_CashierApp.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,11 @@ namespace MMK_OSD_CashierApp.Views
     /// </summary>
     public partial class Window_ProductManager : Window
     {
-        public Window_ProductManager()
+        public Window_ProductManager(ProductManager_ViewModel vm_ProductManager)
         {
             InitializeComponent();
+
+            this.DataContext = vm_ProductManager;
         }
     }
 }
