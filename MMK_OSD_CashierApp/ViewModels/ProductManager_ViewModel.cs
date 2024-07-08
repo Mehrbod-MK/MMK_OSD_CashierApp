@@ -1,5 +1,6 @@
 ﻿using MMK_OSD_CashierApp.Helpers;
 using MMK_OSD_CashierApp.Models;
+using MMK_OSD_CashierApp.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -170,11 +171,32 @@ namespace MMK_OSD_CashierApp.ViewModels
             return true;
         }
 
+        private RelayCommand command_AddProduct;
+        public ICommand Command_AddProduct => command_AddProduct;
+        public void Order_AddProduct(object? parameter)
+        {
+            Window_InputForm inputForm_NewProduct = new(new(
+                "مشخصات کالای جدید را وارد کنید:",
+                new()
+                {
+                    new() { Question = "شماره کالا", },
+                    new() { Question = "نام کالا", },
+                }
+                ));
+
+            inputForm_NewProduct.ShowDialog();
+        }
+        public bool Allow_AddProduct(object? parameter)
+        {
+            return true;
+        }
+
         public ProductManager_ViewModel(User loggedIn_User)
         {
             queriedProducts = new ObservableCollection<Product>();
 
             command_SearchProducts = new RelayCommand(Order_SearchProducts, Allow_SearchProducts);
+            command_AddProduct = new RelayCommand(Order_AddProduct, Allow_AddProduct);
         }
 
         public string Generate_SearchProductConditionalQuery()

@@ -37,7 +37,7 @@
                 </RibbonGroup>
 
                 <RibbonGroup Header="مدیریت">
-                    <RibbonButton Label="ثبت کالای جدید" LargeImageSource="../Resources/Menu_Icons/menu_Product_Add.png"/>
+                    <RibbonButton Label="ثبت کالای جدید" Command="{Binding Command_AddProduct}" LargeImageSource="../Resources/Menu_Icons/menu_Product_Add.png"/>
                     <RibbonButton Label="ویرایش کالاهای انتخابی" LargeImageSource="../Resources/Menu_Icons/menu_Product_Edit.png"/>
                     <RibbonButton Label="حذف کالاهای انتخابی" LargeImageSource="../Resources/Menu_Icons/menu_Product_Remove.png"/>
                 </RibbonGroup>
