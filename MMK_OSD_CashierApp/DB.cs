@@ -89,7 +89,7 @@ namespace MMK_OSD_CashierApp
             DB_ROLE_Customer =      1 << 0,
             DB_ROLE_Cashier =       1 << 1,
             DB_ROLE_FundManager =   1 << 2,
-            DB_ROLE_StoreManager =  1 << 3,
+            DB_ROLE_InventoryManager =  1 << 3,
             DB_ROLE_DBA =           1 << 4,
         }
 

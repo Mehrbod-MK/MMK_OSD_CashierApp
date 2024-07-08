@@ -13,6 +13,7 @@
     <None Remove="Resources\bkg_ShoppingPattern.png" />
     <None Remove="Resources\cashier.png" />
     <None Remove="Resources\gif_Loading.gif" />
+    <None Remove="Resources\ico_MsgBox_Error.png" />
     <None Remove="Resources\ico_MsgBox_Info.png" />
     <None Remove="Resources\ico_MsgBox_Warning.png" />
     <None Remove="Resources\img_Bkg_LoginPersonnel.jpg" />
@@ -49,6 +50,7 @@
     <Resource Include="Resources\bkg_ShoppingPattern.png" />
     <Resource Include="Resources\cashier.png" />
     <Resource Include="Resources\gif_Loading.gif" />
+    <Resource Include="Resources\ico_MsgBox_Error.png" />
     <Resource Include="Resources\ico_MsgBox_Info.png" />
     <Resource Include="Resources\ico_MsgBox_Warning.png" />
     <Resource Include="Resources\img_Bkg_LoginPersonnel.jpg" />
@@ -70,7 +72,9 @@
     <Resource Include="Resources\Menu_Icons\menu_Icon_Tips_Large.png" />
     <Resource Include="Resources\Menu_Icons\menu_MgrCustCart_Load.png" />
     <Resource Include="Resources\Menu_Icons\menu_MgrCustCart_New.png" />
+    <Resource Include="Resources\Menu_Icons\menu_Product_Add.png" />
     <Resource Include="Resources\Menu_Icons\menu_Product_Edit.png" />
+    <Resource Include="Resources\Menu_Icons\menu_Product_Remove.png" />
     <Resource Include="Resources\Menu_Icons\menu_Receipt.png" />
     <Resource Include="Resources\Menu_Icons\menu_Receipt_View.png" />
     <Resource Include="Resources\Menu_Icons\menu_Remove.png" />

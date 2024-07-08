@@ -76,11 +76,11 @@ namespace MMK_OSD_CashierApp.ViewModels
             set => SetProperty(ref maximum_ProductPrice, value);
         }
 
-        private bool? contains_Vendor;
-        public bool? Contains_Vendor
+        private bool? contains_ProductVendor;
+        public bool? Contains_ProductVendor
         {
-            get => contains_Vendor;
-            set => SetProperty(ref contains_Vendor, value);
+            get => contains_ProductVendor;
+            set => SetProperty(ref contains_ProductVendor, value);
         }
 
         private bool? display_Unavailables;
@@ -108,11 +108,86 @@ namespace MMK_OSD_CashierApp.ViewModels
         public ICommand Command_SearchProducts => command_SearchProducts;
         public void Order_SearchProducts(object? parameter)
         {
+            string searchQuery = $"SELECT * FROM {DB.DB_TABLE_NAME_PRODUCTS} WHERE ";
+
+            if(!string.IsNullOrEmpty(search_ProductID) && !uint.TryParse(search_ProductID, out uint prodID))
+            {
+                if(contains_ProductID == true)
+                {
+                    searchQuery += $"ProductID LIKE \'%{prodID}%\' AND ";
+                }
+                else
+                {
+                    searchQuery += $"ProductID = {prodID} AND ";
+                }
+            }
+
+            if (!string.IsNullOrEmpty(search_ProductName))
+            {
+                if (contains_ProductName == true)
+                {
+                    searchQuery += $"ProductName LIKE \'%{search_ProductName}%\' AND ";
+                }
+                else
+                {
+                    searchQuery += $"ProductName = '{search_ProductName}' AND ";
+                }
+            }
+
+            if (!string.IsNullOrEmpty(search_ProductPrice) && !uint.TryParse(search_ProductPrice, out uint price))
+            {
+                if (minimum_ProductPrice == true)
+                {
+                    searchQuery += $"Price >= \'%{price}%\' AND ";
+                }
+                if(maximum_ProductPrice == true)
+                {
+                    searchQuery += $"Price <= {price} AND ";
+                }
+            }
+
+            if (!string.IsNullOrEmpty(search_ProductVendor))
+            {
+                if (contains_ProductVendor == true)
+                {
+                    searchQuery += $"Vendor LIKE \'%{search_ProductVendor}%\' AND ";
+                }
+                else
+                {
+                    searchQuery += $"Vendor = '{search_ProductVendor}' AND ";
+                }
+            }
+
+            if (display_Unavailables == true)
+            {
+                searchQuery += "Quantity = 0 AND ";
+            }
+
+            if (display_AboutToRunOuts == true)
+            {
+                searchQuery += "Quantity > 0 AND Quantity <= 5 AND ";
+            }
+
+            if (display_NoPhotos == true)
+            {
+                searchQuery += "ThumbImagePath = NULL AND ";
+            }
+
+            // End search query for AND operators.
+            searchQuery += "TRUE;";
+
             
         }
         public bool Allow_SearchProducts(object? parameter)
         {
             return true;
+        }
+
+        public ProductManager_ViewModel(User loggedIn_User)
+        {
+            queriedProducts = new ObservableCollection<Product>();
+
+            command_SearchProducts = new RelayCommand(Order_SearchProducts, Allow_SearchProducts);
         }
     }
 }

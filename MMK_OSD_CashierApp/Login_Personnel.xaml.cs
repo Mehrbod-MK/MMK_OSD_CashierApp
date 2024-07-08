@@ -177,8 +177,19 @@ namespace MMK_OSD_CashierApp
                 {
                     this.Hide();
 
-                    Views.Window_Dashboard dashboard = new(new Dashboard_ViewModel(foundUser));
-                    dashboard.Show();
+                    // Cashier View.
+                    if((foundUser.RoleFlags | (uint) DB.DB_Roles.DB_ROLE_Cashier) != 0)
+                    {
+                        Views.Window_Dashboard dashboard = new(new Dashboard_ViewModel(foundUser));
+                        dashboard.Show();
+                    }
+
+                    // Product Manager View.
+                    if ((foundUser.RoleFlags | (uint)DB.DB_Roles.DB_ROLE_InventoryManager) != 0)
+                    {
+                        Views.Window_ProductManager productManager = new();
+                        productManager.Show();
+                    }
                 }
             };
 
