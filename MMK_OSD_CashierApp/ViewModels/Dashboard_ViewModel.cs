@@ -34,7 +34,7 @@ namespace MMK_OSD_CashierApp.ViewModels
 
         public void Order_CreateNewCart(object? parameter)
         {
-            (parameter as Window)?.Hide();
+            // (parameter as Window)?.Hide();
             if (User_LoggedIn == null)
                 return;
 
