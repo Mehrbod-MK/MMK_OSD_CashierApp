@@ -105,8 +105,8 @@
                     <GridViewColumn Header="قیمت" Width="100" DisplayMemberBinding="{Binding Price, UpdateSourceTrigger=PropertyChanged}"/>
                     <GridViewColumn Header="شرکت عرضه‌کننده" Width="100" DisplayMemberBinding="{Binding Vendor, UpdateSourceTrigger=PropertyChanged}"/>
                     <GridViewColumn Header="تاریخ ثبت" Width="100" DisplayMemberBinding="{Binding DateTimeSubmitted, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Converter_FromDateTime_ToPersianLongDateString}}"/>
-                    <GridViewColumn Header="موجودی در انبار" Width="100"/>
-                    <GridViewColumn Header="تصویر کالا" Width="100"/>
+                    <GridViewColumn Header="موجودی در انبار" Width="100" DisplayMemberBinding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"/>
+                    <GridViewColumn Header="تصویر کالا" Width="100" DisplayMemberBinding="{Binding ThumbImagePath, UpdateSourceTrigger=PropertyChanged}"/>
                 </GridView>
             </ListView.View>
             

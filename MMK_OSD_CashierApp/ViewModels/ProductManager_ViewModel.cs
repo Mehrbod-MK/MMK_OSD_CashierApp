@@ -137,13 +137,13 @@ namespace MMK_OSD_CashierApp.ViewModels
                         );
 
                     if (resultOfSearch == null)
-                        throw new NullReferenceException("پاسخی از سوی پایگاه داده یافت نشد.");
+                        throw new NullReferenceException("پاسخی از سوی پایگاه داده دریافت نشد.");
 
                     if (resultOfSearch.Count == 0)
                     {
                         MakeMessageBoxes.Display_Notification(
-                            "",
                             "جستجو نتیجه‌ای در بر نداشت.",
+                            "",
                             System.Windows.MessageBoxButton.OK,
                             System.Windows.MessageBoxResult.OK
                             );
@@ -181,7 +181,7 @@ namespace MMK_OSD_CashierApp.ViewModels
         {
             string searchQuery = $"SELECT * FROM {DB.DB_TABLE_NAME_PRODUCTS} WHERE ";
 
-            if (!string.IsNullOrEmpty(search_ProductID) && !uint.TryParse(search_ProductID, out uint prodID))
+            if (!string.IsNullOrEmpty(search_ProductID) && uint.TryParse(search_ProductID, out uint prodID))
             {
                 if (contains_ProductID == true)
                 {
@@ -205,7 +205,7 @@ namespace MMK_OSD_CashierApp.ViewModels
                 }
             }
 
-            if (!string.IsNullOrEmpty(search_ProductPrice) && !uint.TryParse(search_ProductPrice, out uint price))
+            if (!string.IsNullOrEmpty(search_ProductPrice) && uint.TryParse(search_ProductPrice, out uint price))
             {
                 if (minimum_ProductPrice == true)
                 {
