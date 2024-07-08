@@ -73,6 +73,7 @@ namespace MMK_OSD_CashierApp
             Worker_ViewModel wvm_LoginPersonnel = new Worker_ViewModel();
 
             string username = "", password = "";
+            User? foundUser = null;
 
             // Login logic.
             worker_LoginPersonnel.DoWork += (sender, e) =>
@@ -87,7 +88,7 @@ namespace MMK_OSD_CashierApp
 
                 // Check if username and password match a record in database.
                 wvm_LoginPersonnel.ProgressState = "در حال جستجوی پایگاه داده...";
-                User? foundUser = DB._THROW_DBRESULT<User?>(MainWindow.db.db_Get_User(username).Result);
+                foundUser = DB._THROW_DBRESULT<User?>(MainWindow.db.db_Get_User(username).Result);
                 if(foundUser == null || foundUser.LoginPassword.ToLower() != password.ToLower())
                 {
                     // If no user found or password was wrong, set error state.
@@ -124,7 +125,7 @@ namespace MMK_OSD_CashierApp
 
             worker_LoginPersonnel.RunWorkerCompleted += (sender, e) =>
             {
-                if (e.Result == null)
+                if (e.Result == null || foundUser == null)
                     throw new NullReferenceException();
 
                 if(e.Error != null)
@@ -176,7 +177,7 @@ namespace MMK_OSD_CashierApp
                 {
                     this.Hide();
 
-                    Views.Window_Dashboard dashboard = new(new Dashboard_ViewModel(username));
+                    Views.Window_Dashboard dashboard = new(new Dashboard_ViewModel(foundUser));
                     dashboard.Show();
                 }
             };

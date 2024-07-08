@@ -1,6 +1,8 @@
-﻿using MMK_OSD_CashierApp.Views;
+﻿using MMK_OSD_CashierApp.Models;
+using MMK_OSD_CashierApp.Views;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,16 +18,16 @@ namespace MMK_OSD_CashierApp.ViewModels
         private RelayCommand cmd_CreateNewCart;
         public ICommand Command_CreateNewCart => cmd_CreateNewCart;
 
-        private string user_NationalID;
-        public string User_NationalID
+        private User? user_LoggedIn = null;
+        public User? User_LoggedIn
         {
-            get => user_NationalID;
-            private set => SetProperty(ref user_NationalID, value);
+            get => user_LoggedIn;
+            private set => SetProperty(ref user_LoggedIn, value);
         }
 
-        public Dashboard_ViewModel(string user_NationalID)
+        public Dashboard_ViewModel(User user_LoggedIn)
         {
-            this.user_NationalID = user_NationalID;
+            this.user_LoggedIn = user_LoggedIn;
 
             cmd_CreateNewCart = new RelayCommand(Order_CreateNewCart, Allow_CreateNewCart);
         }
@@ -33,13 +35,17 @@ namespace MMK_OSD_CashierApp.ViewModels
         public void Order_CreateNewCart(object? parameter)
         {
             (parameter as Window)?.Hide();
+            if (User_LoggedIn == null)
+                return;
 
-            Window_CartManager wnd_CartManager = new Window_CartManager(new CartManager_ViewModel(User_NationalID));
+            Window_CartManager wnd_CartManager = new Window_CartManager(new CartManager_ViewModel(user_LoggedIn.NationalID));
             wnd_CartManager.ShowDialog();
         }
         public bool Allow_CreateNewCart(object? parameter)
         {
-            return true;
+   
+            return (user_LoggedIn != null) && 
+                ((user_LoggedIn.RoleFlags | (uint)DB.DB_Roles.DB_ROLE_Cashier) != 0);
         }
 
         #endregion

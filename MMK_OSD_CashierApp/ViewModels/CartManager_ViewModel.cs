@@ -426,6 +426,9 @@ namespace MMK_OSD_CashierApp.ViewModels
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value == null)
+                return DependencyProperty.UnsetValue;
+
             DateTime dt = (DateTime) value;
             PersianCalendar pc = new PersianCalendar();
 

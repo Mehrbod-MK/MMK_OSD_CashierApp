@@ -4,11 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MMK_OSD_CashierApp.Views"
+        xmlns:cartmanager_viewmodel="clr-namespace:MMK_OSD_CashierApp.ViewModels"
         mc:Ignorable="d"
         x:Name="Window_Dashboard_View"
         Title="پنل کاربری - %s %s" Height="450" Width="800"
         FlowDirection="RightToLeft"
         WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <cartmanager_viewmodel:FromDateTime_ToPersianLongDateString x:Key="Converter_FromDateTime_ToPersianLongDateString"/>
+    </Window.Resources>
+    
     <StackPanel x:Name="StackPanel_Dashboard">
 
         <!-- Main Menu Controls -->
@@ -18,12 +24,26 @@
                 <RibbonApplicationMenu>
                     <!-- Auxillary Pane -->
                     <RibbonApplicationMenu.AuxiliaryPaneContent>
-                        <StackPanel Margin="7px" Orientation="Vertical">
-                            <TextBlock FontSize="17">کد ملی:</TextBlock>
-                            <TextBlock FontSize="17">نام:</TextBlock>
-                            <TextBlock FontSize="17">نام خانوادگی:</TextBlock>
-                            <TextBlock FontSize="17">آخرین زمان ورود:</TextBlock>
-                        </StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Margin="7px" Orientation="Vertical">
+                                <TextBlock FontSize="12">کد ملی:</TextBlock>
+                                <TextBlock FontSize="12">نام:</TextBlock>
+                                <TextBlock FontSize="12">نام خانوادگی:</TextBlock>
+                                <TextBlock FontSize="12">آخرین زمان ورود:</TextBlock>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Margin="7px" Orientation="Vertical">
+                                <TextBlock FontSize="12" Text="{Binding User_LoggedIn.NationalID, Mode=OneWay, FallbackValue=نامشخص}"/>
+                                <TextBlock FontSize="12" Text="{Binding User_LoggedIn.FirstName, Mode=OneWay, FallbackValue=نامشخص}"/>
+                                <TextBlock FontSize="12" Text="{Binding User_LoggedIn.LastName, Mode=OneWay, FallbackValue=نامشخص}"/>
+                                <TextBlock FontSize="12" Text="{Binding User_LoggedIn.LastLoginDateTime, Mode=OneWay, Converter={StaticResource Converter_FromDateTime_ToPersianLongDateString}, FallbackValue=نامشخص}"/>
+                            </StackPanel>
+                        </Grid>
                     </RibbonApplicationMenu.AuxiliaryPaneContent>
                     <RibbonApplicationMenuItem Header="راهنما" ImageSource="../Resources/Menu_Icons/menu_Icon_Tips_Large.png"/>
                     <RibbonApplicationMenuItem Header="تنظیمات" ImageSource="../Resources/Menu_Icons/menu_Icon_Settings.png"/>
