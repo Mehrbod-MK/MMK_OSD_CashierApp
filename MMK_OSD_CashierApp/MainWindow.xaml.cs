@@ -70,16 +70,11 @@ namespace MMK_OSD_CashierApp
                 WorkerSupportsCancellation = true
             };
 
-            var workerVM = new ViewModels.Worker_ViewModel();
-
-            worker.RunWorkerCompleted += (sender, e) =>
-            {
-                Application.Current.Dispatcher.Invoke(() => this.IsEnabled = true);
-            };
+            var workerVM = new Worker_ViewModel();
 
             worker.DoWork += (sender, e) =>
             {
-                Application.Current.Dispatcher.Invoke(() => this.IsEnabled = false);
+                // Application.Current.Dispatcher.Invoke(() => this.IsEnabled = false);
 
                 workerVM.ProgressState = "در حال بررسی اتصال به پایگاه داده";
 
@@ -87,7 +82,7 @@ namespace MMK_OSD_CashierApp
                 var dbResult_TestRoot = db.sql_TestRootConnection().Result;
                 if (dbResult_TestRoot.result != DB.DBResultEnum.DB_OK)
                 {
-                    Application.Current.Dispatcher.Invoke(() => workerVM.ProgressColor = new SolidColorBrush(Color.FromRgb(255, 255, 0)));
+                    // Application.Current.Dispatcher.Invoke(() => workerVM.ProgressColor = new SolidColorBrush(Color.FromRgb(255, 255, 0)));
                     workerVM.ProgressState = "پایگاه داده با رمز Root محافظت شده است.";
 
                     Task.Delay(100).Wait();
@@ -130,6 +125,7 @@ namespace MMK_OSD_CashierApp
                             }
 
                             // If password was OK, exit.
+                            e.Result = true;
                             break;
                         }
                         else
@@ -139,25 +135,32 @@ namespace MMK_OSD_CashierApp
                         }
                     }
                 }
-
-                // Wait a little...
-                Task.Delay(500).Wait();
+                else
+                    e.Result = true;
             };
+
+            Dialog_Worker workerDialog = new(worker, workerVM);
 
             // Finish worker -> Display Personnel Login Page.
             worker.RunWorkerCompleted += (sender, e) =>
             {
-                // Hide this window.
-                this.Hide();
+                if((bool?)e.Result == true)
+                {
+                    // Hide this window.
+                    this.Hide();
 
-                var wnd_LoginPersonnel = new Login_Personnel(this);
-                wnd_LoginPersonnel.ShowDialog();
+                    // workerDialog.Close();
 
-                this.Show();
+                    var wnd_LoginPersonnel = new Login_Personnel(this);
+                    wnd_LoginPersonnel.Show();
+
+                    // this.Show();
+                }
             };
 
-            Dialog_Worker workerDialog = new(worker, workerVM);
-            workerDialog.ShowDialog();
+            // this.IsEnabled = false;
+            workerDialog.Show();
+            // this.IsEnabled = true;
         }
     }
 }

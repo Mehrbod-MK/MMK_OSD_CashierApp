@@ -58,7 +58,7 @@ namespace MMK_OSD_CashierApp
             else
             {
                 e.Cancel = false;
-                ref_MainWindow.Show();
+                // ref_MainWindow.Show();
             }
         }
 
@@ -125,7 +125,7 @@ namespace MMK_OSD_CashierApp
 
             worker_LoginPersonnel.RunWorkerCompleted += (sender, e) =>
             {
-                if (e.Result == null || foundUser == null)
+                if (e.Result == null /*&& foundUser == null*/)
                     throw new NullReferenceException();
 
                 if(e.Error != null)
@@ -175,6 +175,9 @@ namespace MMK_OSD_CashierApp
                 // Successful Login.
                 else if((string)e.Result == DB.DB_QUERY_USER_OK)
                 {
+                    if (foundUser == null)
+                        throw new NullReferenceException("خطای بزرگ پایگاه داده!");
+
                     this.Hide();
 
                     // Cashier View.
@@ -191,14 +194,17 @@ namespace MMK_OSD_CashierApp
                         productManager.Show();
                     }*/
 
-                    Views.Window_Dashboard dashboard = new(new(foundUser));
-                    dashboard.ShowDialog();
-
                     // Reset credentials.
                     TextBox_Personnel_Username.Text = string.Empty;
                     PasswordBox_Personnel_Username.Password = string.Empty;
 
-                    this.Show();
+                    Views.Window_Dashboard dashboard = new(new(foundUser, this));
+                    dashboard.ShowDialog();
+
+                    // Show first window.
+                    ref_MainWindow.Show();
+
+                    this.Close();
                 }
             };
 

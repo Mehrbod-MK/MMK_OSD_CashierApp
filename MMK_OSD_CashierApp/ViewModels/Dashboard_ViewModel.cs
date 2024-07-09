@@ -15,6 +15,8 @@ namespace MMK_OSD_CashierApp.ViewModels
     {
         #region Public_Commands
 
+        private Login_Personnel wnd_LoginPersonnel;
+
         private RelayCommand cmd_CreateNewCart;
         public ICommand Command_CreateNewCart => cmd_CreateNewCart;
 
@@ -24,12 +26,13 @@ namespace MMK_OSD_CashierApp.ViewModels
             get => user_LoggedIn;
             private set => SetProperty(ref user_LoggedIn, value);
         }
-        public Dashboard_ViewModel(User user_LoggedIn)
+        public Dashboard_ViewModel(User user_LoggedIn, Login_Personnel wnd_LoginPersonnel)
         {
             this.user_LoggedIn = user_LoggedIn;
 
             cmd_CreateNewCart = new RelayCommand(Order_CreateNewCart, Allow_CreateNewCart);
             cmd_ManageProducts = new RelayCommand(Order_ManageProducts, Allow_ManageProducts);
+            this.wnd_LoginPersonnel = wnd_LoginPersonnel;
         }
         public void Order_CreateNewCart(object? parameter)
         {
