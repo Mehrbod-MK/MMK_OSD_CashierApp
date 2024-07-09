@@ -258,12 +258,81 @@ namespace MMK_OSD_CashierApp.ViewModels
             return true;
         }
 
+        private RelayCommand command_DeleteProducts;
+        public ICommand Command_DeleteProducts => command_DeleteProducts;
+        public void Order_DeleteProducts(object? parameter)
+        {
+            if (parameter is not ListView listView)
+                return;
+
+            if(listView.SelectedItems.Count == 0)
+            {
+                MakeMessageBoxes.Display_Notification(
+                    "کالایی از لیست انتخاب نشده است.",
+                    "",
+                    MessageBoxButton.OK,
+                    MessageBoxResult.OK
+                    );
+                return;
+            }
+
+            List<Product> selectedProducts = listView.SelectedItems.Cast<Product>().ToList();
+
+            Worker_ViewModel vm_Worker_DeleteProducts = new();
+            BackgroundWorker bkgWorker_DeleteProducts = new()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false,
+            };
+
+            bkgWorker_DeleteProducts.DoWork += (sender, e) =>
+            {
+                if (MakeMessageBoxes.Display_Warning($"آیا از حذف {selectedProducts.Count} مورد اطمینان دارید؟\nدر صورت تأیید، امکان بازیابی وجود ندارد.",
+                    "هشدار حذف",
+                    MessageBoxButton.YesNo,
+                    MessageBoxResult.No) == MessageBoxResult.No)
+                    return;
+
+                try
+                {
+                    var dbResult_Deletion = DB._THROW_DBRESULT<bool?>
+                    (
+                        MainWindow.db.db_Delete_Products(selectedProducts).Result
+                    );
+
+                    MakeMessageBoxes.Display_Notification(
+                        $"تعداد {selectedProducts.Count} با موفقیت حذف شدند.",
+                        "حذف موفق",
+                        MessageBoxButton.OK,
+                        MessageBoxResult.OK
+                        );
+                }
+                catch(Exception ex)
+                {
+                    MakeMessageBoxes.Display_Error_DB(ex);
+                }
+            };
+
+            Dialog_Worker dlgWorker = new(bkgWorker_DeleteProducts, vm_Worker_DeleteProducts);
+            dlgWorker.ShowDialog();
+        }
+        public bool Allow_DeleteProducts(object? parameter)
+        {
+            if (parameter is not ListView listView)
+            {
+                // MessageBox.Show(parameter.ToString());
+            }
+
+            return true;
+        }
+
         public ProductManager_ViewModel(User loggedIn_User)
         {
             queriedProducts = new ObservableCollection<Product>();
 
             command_SearchProducts = new RelayCommand(Order_SearchProducts, Allow_SearchProducts);
             command_AddProduct = new RelayCommand(Order_AddProduct, Allow_AddProduct);
+            command_DeleteProducts = new RelayCommand(Order_DeleteProducts, Allow_DeleteProducts);
         }
 
         public string Generate_SearchProductConditionalQuery()

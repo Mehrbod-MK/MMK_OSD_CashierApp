@@ -39,7 +39,7 @@
                 <RibbonGroup Header="مدیریت">
                     <RibbonButton Label="ثبت کالای جدید" Command="{Binding Command_AddProduct}" LargeImageSource="../Resources/Menu_Icons/menu_Product_Add.png"/>
                     <RibbonButton Label="ویرایش کالاهای انتخابی" LargeImageSource="../Resources/Menu_Icons/menu_Product_Edit.png"/>
-                    <RibbonButton Label="حذف کالاهای انتخابی" LargeImageSource="../Resources/Menu_Icons/menu_Product_Remove.png"/>
+                    <RibbonButton Label="حذف کالاهای انتخابی" Command="{Binding Command_DeleteProducts}" CommandParameter="{Binding ElementName=ListView_QueriedItems}" LargeImageSource="../Resources/Menu_Icons/menu_Product_Remove.png"/>
                 </RibbonGroup>
 
                 <RibbonGroup Header="پایگاه داده" Visibility="Collapsed">
@@ -97,7 +97,7 @@
             </Grid>
         </GroupBox>
 
-        <ListView Grid.Row="2" Grid.ColumnSpan="3" ItemsSource="{Binding QueriedProducts, UpdateSourceTrigger=PropertyChanged}">
+        <ListView x:Name="ListView_QueriedItems" Grid.Row="2" Grid.ColumnSpan="3" ItemsSource="{Binding QueriedProducts, UpdateSourceTrigger=PropertyChanged}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="شماره کالا" Width="100" DisplayMemberBinding="{Binding ProductID, UpdateSourceTrigger=PropertyChanged}"/>

@@ -542,6 +542,60 @@ namespace MMK_OSD_CashierApp
             }
         }
 
+        public async Task<DBResult> db_Delete_Products(List<Product> productsToDelete)
+        {
+            try
+            {
+                using(var connection = new MySqlConnection(get_RecentConnectionString()))
+                {
+                    connection.ConfigureAwait(false);
+                    await connection.OpenAsync();
+
+                    var transaction = await connection.BeginTransactionAsync();
+                    transaction.ConfigureAwait(false);
+
+                    try
+                    {
+                        foreach (var product in productsToDelete)
+                        {
+                            using (var command = new MySqlCommand($"DELETE FROM {DB_TABLE_NAME_PRODUCTS} WHERE ProductID = {product.ProductID};", connection, transaction))
+                            {
+                                MessageBox.Show(command.CommandText);
+                                command.ConfigureAwait(false);
+                                await command.ExecuteNonQueryAsync();
+                            }
+                        }
+
+                        await transaction.CommitAsync();
+                    }
+                    catch(Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+
+                        return new DBResult()
+                        {
+                            result = DBResultEnum.DB_ROLLBACKED_TRANSACTION,
+                            returnValue = ex,
+                        };
+                    }
+                }
+
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_OK,
+                    returnValue = true,
+                };
+            }
+            catch(Exception ex)
+            {
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_ERROR,
+                    returnValue = ex,
+                };
+            }
+        }
+
         public static string SecureStringToString(SecureString value)
         {
             IntPtr bstr = Marshal.SecureStringToBSTR(value);
