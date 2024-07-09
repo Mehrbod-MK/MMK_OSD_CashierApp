@@ -44,6 +44,7 @@
     <None Remove="Resources\Menu_Icons\menu_Submit.png" />
     <None Remove="Resources\Menu_Icons\searchIcon.png" />
     <None Remove="Resources\productIcon.png" />
+    <None Remove="Resources\splashScreen.jpg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -87,6 +88,10 @@
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.4.0" />
     <PackageReference Include="MySql.Data" Version="8.4.0" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <SplashScreen Include="Resources\splashScreen.jpg" />
   </ItemGroup>
 
 </Project>

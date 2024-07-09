@@ -75,6 +75,11 @@
                     <RibbonButton Command="{Binding Command_ManageProducts}" Label="مدیریت کالا ها" LargeImageSource="../Resources/productIcon.png"/>
                 </RibbonGroup>
             </RibbonTab>
+
+            <RibbonTab Header="صندوق رفاه مشتریان">
+                
+            </RibbonTab>
+            
         </Ribbon>
 
     </StackPanel>
