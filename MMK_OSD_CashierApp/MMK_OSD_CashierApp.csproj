@@ -7,11 +7,26 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+    <ApplicationIcon>Resources\appIcon.ico</ApplicationIcon>
+    <Company>Mehrbod Molla Kazemi</Company>
+    <Copyright>Copyright (C) Mehrbod Molla Kazemi - All righs reserved 2024</Copyright>
+    <PackageIcon>appIcon.png</PackageIcon>
+    <SignAssembly>False</SignAssembly>
+    <Version>0.7.0.0</Version>
+    <AssemblyVersion>0.7.0.0</AssemblyVersion>
+    <FileVersion>0.7.0.0</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>portable</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Resources\appIcon.ico" />
-    <None Remove="Resources\appIcon.png" />
     <None Remove="Resources\bkg_ShoppingPattern.png" />
     <None Remove="Resources\cashier.png" />
     <None Remove="Resources\gif_Loading.gif" />
@@ -47,6 +62,10 @@
     <None Remove="Resources\Menu_Icons\searchIcon.png" />
     <None Remove="Resources\productIcon.png" />
     <None Remove="Resources\splashScreen.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\appIcon.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -96,6 +115,13 @@
 
   <ItemGroup>
     <SplashScreen Include="Resources\splashScreen.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Resources\appIcon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
