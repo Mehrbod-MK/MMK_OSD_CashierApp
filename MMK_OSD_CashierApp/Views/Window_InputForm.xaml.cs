@@ -65,7 +65,7 @@ namespace MMK_OSD_CashierApp.Views
             }
         }
 
-        private bool cancelClose = true;
+        private bool cancelClose = false;
 
         private void Button_OK_Click(object sender, RoutedEventArgs e)
         {
@@ -90,12 +90,16 @@ namespace MMK_OSD_CashierApp.Views
             e.Cancel = cancelClose;
 
             if (e.Cancel)
+            {
                 MakeMessageBoxes.Display_Warning(
                     "لطفاً مقادیر فرم را به درستی و در فرمت درست وارد کنید.",
                     "هشدار",
                     MessageBoxButton.OK,
                     MessageBoxResult.OK
                     );
+
+                cancelClose = false;
+            }
         }
     }
 }
