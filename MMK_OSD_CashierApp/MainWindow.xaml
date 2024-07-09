@@ -11,7 +11,7 @@
         FlowDirection="RightToLeft"
         ResizeMode="CanMinimize"
         WindowStartupLocation="CenterScreen"
-        >
+        Closing="Window_Closing">
 
     <Window.Resources>
         <Style TargetType="{x:Type Button}">

@@ -1,4 +1,5 @@
-﻿using MMK_OSD_CashierApp.ViewModels;
+﻿using MMK_OSD_CashierApp.Helpers;
+using MMK_OSD_CashierApp.ViewModels;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
@@ -161,6 +162,19 @@ namespace MMK_OSD_CashierApp
             // this.IsEnabled = false;
             workerDialog.Show();
             // this.IsEnabled = true;
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            if (MakeMessageBoxes.Display_Warning(
+                "آیا واقعاً می‌خواهید از برنامه خارج شوید؟",
+                "هشدار خروج",
+                MessageBoxButton.YesNo,
+                MessageBoxResult.No
+                ) == MessageBoxResult.Yes)
+                e.Cancel = false;
+            else
+                e.Cancel = true;
         }
     }
 }

@@ -18,7 +18,7 @@
     <StackPanel x:Name="StackPanel_Dashboard">
 
         <!-- Main Menu Controls -->
-        <Ribbon SelectedIndex="0">
+        <Ribbon SelectedIndex="2">
             <!-- Main application menu -->
             <Ribbon.ApplicationMenu>
                 <RibbonApplicationMenu>
@@ -76,8 +76,12 @@
                 </RibbonGroup>
             </RibbonTab>
 
-            <RibbonTab Header="صندوق رفاه مشتریان">
-                
+            <RibbonTab Header="صندوق رفاه مشتریان" Visibility="{Binding Display_RibbonTab_FundManager}">
+                <RibbonGroup FontSize="12" Header="نرخ تخفیف">
+                    <TextBlock>صدم درصد تخفیف برای خرید قبلی مشتری:</TextBlock>
+                    <RibbonTextBox FontSize="12" Text="{Binding Funds_DiscountPercent, UpdateSourceTrigger=PropertyChanged, FallbackValue=5}" TextAlignment="Center"/>
+                    <RibbonButton Label="ثبت نرخ تخفیف" LargeImageSource="../Resources/Menu_Icons/menu_Submit.png"></RibbonButton>
+                </RibbonGroup>
             </RibbonTab>
             
         </Ribbon>

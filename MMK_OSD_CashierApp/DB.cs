@@ -32,10 +32,13 @@ namespace MMK_OSD_CashierApp
         public const string DB_TABLE_NAME_USERS = @"users";
         public const string DB_TABLE_NAME_PRODUCTS = @"products";
         public const string DB_TABLE_NAME_PURCHASES = @"purchases";
+        public const string DB_TABLE_NAME_PARAMETERS = @"parameters";
 
         public const string DB_QUERY_USER_OK = @"DB_QUERY_USER_OK";
         public const string DB_QUERY_ERROR_USER_BAD_CREDENTIALS = @"DB_QUERY_ERROR_USER_BAD_CREDENTIALS";
         public const string DB_QUERY_ERROR_RESTRICTED_ACCESS = @"DB_QUERY_ERROR_RESTRICTED_ACCESS";
+
+        public const string DB_PARAMETER_MAX_DISCOUNT_PERCENT = @"MAX_DISCOUNT_PERCENT";
 
         #endregion
 
@@ -656,6 +659,124 @@ namespace MMK_OSD_CashierApp
                 {
                     result = DBResultEnum.DB_ERROR,
                     returnValue = ex,
+                };
+            }
+        }
+
+        public DBResult db_Set_Parameter_Float_SYNC(string param, float? value)
+        {
+            try
+            {
+                using(var connection = new MySqlConnection(get_RecentConnectionString()))
+                {
+                    connection.Open();
+
+                    var transaction = connection.BeginTransaction();
+
+                    // Check if parameter exists first.
+                    var dbResult_getCommand = db_Get_Parameter_Float_SYNC(param);
+                    if(dbResult_getCommand.result == DBResultEnum.DB_OK)
+                    {
+                        // Parameter existed, just update it.
+                        using(var command = new MySqlCommand($"UPDATE {DB_TABLE_NAME_PARAMETERS} SET Value = \'{(value == null ? "NULL" : value)}\' WHERE Parameter = \'{param}\'", connection))
+                        {
+                            command.ExecuteNonQuery();
+
+                            try
+                            {
+                                transaction.Commit();
+                            }
+                            catch(Exception ex)
+                            {
+                                transaction.Rollback();
+
+                                return new DBResult()
+                                {
+                                    result = DBResultEnum.DB_ROLLBACKED_TRANSACTION,
+                                    returnValue = ex,
+                                };
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Command not existed, add a new record.
+                        using (var command = new MySqlCommand($"INSERT INTO {DB_TABLE_NAME_PARAMETERS} VALUES (\'{param}\', \'{(value == null ? "NULL" : value)}\');"))
+                        {
+                            command.ExecuteNonQuery();
+
+                            try
+                            {
+                                transaction.Commit();
+                            }
+                            catch (Exception ex)
+                            {
+                                transaction.Rollback();
+
+                                return new DBResult()
+                                {
+                                    result = DBResultEnum.DB_ROLLBACKED_TRANSACTION,
+                                    returnValue = ex,
+                                };
+                            }
+                        }
+                    }
+                }
+
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_OK,
+                    returnValue = true,
+                };
+            }
+            catch(Exception ex)
+            {
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_ERROR,
+                    returnValue = ex,
+                };
+            }
+        }
+
+        public DBResult db_Get_Parameter_Float_SYNC(string param)
+        {
+            float? value = null;
+
+            try
+            {
+                using (var connection = new MySqlConnection(get_RecentConnectionString()))
+                {
+                    connection.Open();
+
+                    using(var command = new MySqlCommand($"SELECT Value FROM {DB_TABLE_NAME_PARAMETERS} WHERE Parameter = \'{param}\';", connection))
+                    {
+                        var reader = command.ExecuteReader();
+
+                        if (!reader.HasRows)
+                            throw new ArgumentException($"پارامتر {param} در پایگاه داده یافت نشد!");
+
+                        reader.Read();
+
+                        if (reader.IsDBNull("Value"))
+                            value = null;
+                        else
+                            value = float.Parse((string)reader["Value"]);
+                    }
+                }
+
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_OK,
+                    returnValue = value
+                };
+            }
+            catch (Exception ex)
+            {
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_ERROR,
+                    returnValue = ex
                 };
             }
         }

@@ -1,7 +1,9 @@
-﻿using MMK_OSD_CashierApp.Models;
+﻿using MMK_OSD_CashierApp.Helpers;
+using MMK_OSD_CashierApp.Models;
 using MMK_OSD_CashierApp.Views;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -67,6 +69,44 @@ namespace MMK_OSD_CashierApp.ViewModels
 
         public Visibility Display_RibbonTab_Cashier => User_LoggedIn != null && ((User_LoggedIn.RoleFlags & (uint)DB.DB_Roles.DB_ROLE_Cashier) != 0) ? Visibility.Visible : Visibility.Collapsed;
         public Visibility Display_RibbonTab_InventoryManager => User_LoggedIn != null && ((User_LoggedIn.RoleFlags & (uint)DB.DB_Roles.DB_ROLE_InventoryManager) != 0) ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility Display_RibbonTab_FundManager => User_LoggedIn != null && ((User_LoggedIn.RoleFlags & (uint)DB.DB_Roles.DB_ROLE_FundManager) != 0) ? Visibility.Visible : Visibility.Collapsed;
+
+        private float? funds_DiscountPercent = 0.0f;
+        public float? Funds_DiscountPercent
+        {
+            get
+            {
+                try
+                {
+                    var resultOfDB = DB._THROW_DBRESULT<float>(MainWindow.db.db_Get_Parameter_Float_SYNC($"{DB.DB_PARAMETER_MAX_DISCOUNT_PERCENT}"));
+
+                    funds_DiscountPercent = resultOfDB;
+
+                    return funds_DiscountPercent;
+                }
+                catch(Exception ex)
+                {
+                    MakeMessageBoxes.Display_Error_DB(ex);
+                    return null;
+                }
+            }
+            set
+            {
+                try
+                {
+                    float val = Convert.ToSingle(value);
+
+                    var resultOfDB = DB._THROW_DBRESULT<bool?>(MainWindow.db.db_Set_Parameter_Float_SYNC($"{DB.DB_PARAMETER_MAX_DISCOUNT_PERCENT}", val));
+                    if(resultOfDB == true)
+                        SetProperty(ref funds_DiscountPercent, value);
+
+                }
+                catch(Exception ex)
+                {
+                    MakeMessageBoxes.Display_Error_DB(ex);
+                }
+            }
+        }
 
         #endregion
     }
