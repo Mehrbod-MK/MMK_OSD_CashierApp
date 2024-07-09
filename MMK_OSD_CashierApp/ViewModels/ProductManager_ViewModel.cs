@@ -399,7 +399,7 @@ namespace MMK_OSD_CashierApp.ViewModels
 
             if (display_NoPhotos == true)
             {
-                searchQuery += "ThumbImagePath = NULL AND ";
+                searchQuery += "(ThumbImagePath = NULL OR ThumbImagePath = \'\') AND ";
             }
 
             // End search query for AND operators.

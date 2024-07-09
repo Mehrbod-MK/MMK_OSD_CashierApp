@@ -517,7 +517,8 @@ namespace MMK_OSD_CashierApp
                         }
                         else
                         {
-                            product.ThumbImagePath = "../Resources/productIcon.png";
+                            // product.ThumbImagePath = "../Resources/productIcon.png";
+                            product.ThumbImagePath = string.Empty;
                         }
 
                         foundProducts.Add(product);
