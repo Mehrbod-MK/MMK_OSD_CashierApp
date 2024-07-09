@@ -597,6 +597,69 @@ namespace MMK_OSD_CashierApp
             }
         }
 
+        public async Task<DBResult> db_Update_Products(List<Product> productsToUpdate)
+        {
+            try
+            {
+                using (var connection = new MySqlConnection(get_RecentConnectionString()))
+                {
+                    connection.ConfigureAwait(false);
+                    await connection.OpenAsync();
+
+                    var transaction = await connection.BeginTransactionAsync();
+                    transaction.ConfigureAwait(false);
+
+                    try
+                    {
+                        foreach (var product in productsToUpdate)
+                        {
+                            using (var command = new MySqlCommand($"UPDATE {DB_TABLE_NAME_PRODUCTS} " +
+                                $"SET " +
+                                $"ProductID = {product.ProductID}," +
+                                $"ProductName = \'{product.ProductName}\'," +
+                                $"Price = {product.Price}," +
+                                $"Vendor = \'{product.Vendor}\'," +
+                                $"DateSubmitted = \'{Convert_FromDateTime_ToSQLDateTimeString(product.DateTimeSubmitted)}\'," +
+                                $"Quantity = \'{product.Quantity}\'," +
+                                $"ThumbImagePath = {(string.IsNullOrEmpty(product.ThumbImagePath) ? "NULL" : $"\'{Path.Combine(product.ThumbImagePath)}\'")} " +
+                                $"WHERE ProductID = {product.ProductID};", connection, transaction))
+                            {
+                                // MessageBox.Show(command.CommandText);
+                                command.ConfigureAwait(false);
+                                await command.ExecuteNonQueryAsync();
+                            }
+                        }
+
+                        await transaction.CommitAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+
+                        return new DBResult()
+                        {
+                            result = DBResultEnum.DB_ROLLBACKED_TRANSACTION,
+                            returnValue = ex,
+                        };
+                    }
+                }
+
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_OK,
+                    returnValue = true,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_ERROR,
+                    returnValue = ex,
+                };
+            }
+        }
+
         public static string SecureStringToString(SecureString value)
         {
             IntPtr bstr = Marshal.SecureStringToBSTR(value);

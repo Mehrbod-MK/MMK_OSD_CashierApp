@@ -14,6 +14,7 @@ using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -91,20 +92,72 @@ namespace MMK_OSD_CashierApp.ViewModels
             if (FoundProduct == null)
                 return;
 
-            SelectedProducts.Add(FoundProduct);
+            // Check for product's quantity.
+            Worker_ViewModel vm = new();
+            BackgroundWorker bkgWorker_AddToCart = new() { WorkerReportsProgress = false, WorkerSupportsCancellation = false, };
+            bkgWorker_AddToCart.DoWork += (sender, e) =>
+            {
+                try
+                {
+                    vm.ProgressState = "در حال استعلام موجودی کالا...";
+                    var queryProductResult = DB._THROW_DBRESULT<Product?>(
+                        MainWindow.db.db_Get_Product(FoundProduct.ProductID).Result
+                        );
 
-            // Update 'Remove items' command.
-            command_RemoveFromCart.InvokeCanExecuteChanged();
-            command_RemoveAllCart.InvokeCanExecuteChanged();
+                    if (queryProductResult == null)
+                        throw new NullReferenceException("کالا دیگر وجود ندارد یا توسط انبارداری حذف شده است.");
 
-            command_FinalSubmit.InvokeCanExecuteChanged();
+                    if(queryProductResult.Quantity == 0)
+                    {
+                        MakeMessageBoxes.Display_Error("موجودی کالا به اتمام رسیده است.",
+                            "خطای عدم موجودی",
+                            MessageBoxButton.OK, MessageBoxResult.OK);
 
-            // Update Cash Values.
-            Update_CashValues();
+                        return;
+                    }
 
-            TextBox? txtBox = parameter as TextBox;
-            if (txtBox != null)
-                txtBox.Focus();
+                    // Update product's quantity in DB.
+                    queryProductResult.Quantity--;
+
+                    var editQuantityProductResult = DB._THROW_DBRESULT<bool?>(
+                        MainWindow.db.db_Update_Products(new() { queryProductResult }).Result
+                        );
+                    
+                    // Everything was OK...
+                    e.Result = true;
+                }
+                catch(Exception ex)
+                {
+                    MakeMessageBoxes.Display_Error_DB(ex);
+                }
+            };
+
+            bkgWorker_AddToCart.RunWorkerCompleted += (sender, e) =>
+            {
+                if ((bool?)e.Result == true)
+                {
+                    // Update quantity view.
+                    FoundProduct.Quantity--;
+
+                    SelectedProducts.Add(FoundProduct);
+
+                    // Update 'Remove items' command.
+                    command_RemoveFromCart.InvokeCanExecuteChanged();
+                    command_RemoveAllCart.InvokeCanExecuteChanged();
+
+                    command_FinalSubmit.InvokeCanExecuteChanged();
+
+                    // Update Cash Values.
+                    Update_CashValues();
+
+                    TextBox? txtBox = parameter as TextBox;
+                    if (txtBox != null)
+                        txtBox.Focus();
+                }
+            };
+
+            Dialog_Worker dlgWorker_AddToCart = new(bkgWorker_AddToCart, vm);
+            dlgWorker_AddToCart.ShowDialog();
         }
         public bool Allow_AddToCart(object? parameter)
         {
@@ -120,21 +173,72 @@ namespace MMK_OSD_CashierApp.ViewModels
 
             var selectedItems = listView_Cart.SelectedItems.Cast<Product>().ToList();
 
-            foreach (var item in selectedItems)
+            // Revive products quantity.
+            Worker_ViewModel vm = new();
+            BackgroundWorker bkgWorker_RemoveFromCart = new() { WorkerReportsProgress = false, WorkerSupportsCancellation = false, };
+            bkgWorker_RemoveFromCart.DoWork += (sender, e) =>
             {
-                SelectedProducts.Remove(item);
-            }
+                try
+                {
+                    vm.ProgressState = "در حال حذف...";
 
-            listView_Cart.SelectedIndex = -1;
+                    List<Product> updatedProducts = new List<Product>();
 
-            // Update Cash Values.
-            Update_CashValues();
+                    foreach (var prod in selectedItems)
+                    {
+                        var db_GetProduct = DB._THROW_DBRESULT<Product?>(
+                            MainWindow.db.db_Get_Product(prod.ProductID).Result
+                            ) ?? throw new NullReferenceException("عدم وجود تعریف کالا در انبار!");
 
-            // Update self and remove all.
-            command_RemoveFromCart.InvokeCanExecuteChanged();
-            command_RemoveAllCart.InvokeCanExecuteChanged();
+                        var foundProduct = updatedProducts.Find(x => x.ProductID == db_GetProduct.ProductID);
+                        if (foundProduct == null)
+                        {
+                            db_GetProduct.Quantity++;
+                            updatedProducts.Add(db_GetProduct);
+                        }
+                        else
+                        {
+                            foundProduct.Quantity++;
+                        }
+                    }
 
-            command_FinalSubmit.InvokeCanExecuteChanged();
+                    var editQuantityProductResult = DB._THROW_DBRESULT<bool?>(
+                        MainWindow.db.db_Update_Products(updatedProducts).Result
+                        );
+
+                    // Everything was OK...
+                    e.Result = true;
+                }
+                catch (Exception ex)
+                {
+                    MakeMessageBoxes.Display_Error_DB(ex);
+                }
+            };
+
+            bkgWorker_RemoveFromCart.RunWorkerCompleted += (sender, e) =>
+            {
+                if ((bool?)e.Result == true)
+                {
+                    foreach (var item in selectedItems)
+                    {
+                        SelectedProducts.Remove(item);
+                    }
+
+                    listView_Cart.SelectedIndex = -1;
+
+                    // Update Cash Values.
+                    Update_CashValues();
+
+                    // Update self and remove all.
+                    command_RemoveFromCart.InvokeCanExecuteChanged();
+                    command_RemoveAllCart.InvokeCanExecuteChanged();
+
+                    command_FinalSubmit.InvokeCanExecuteChanged();
+                }
+            };
+
+            Dialog_Worker dlgWorker_AddToCart = new(bkgWorker_RemoveFromCart, vm);
+            dlgWorker_AddToCart.ShowDialog();
         }
         public bool Allow_RemoveFromCart(object? parameter)
         {
@@ -235,16 +339,67 @@ namespace MMK_OSD_CashierApp.ViewModels
         public ICommand Command_RemoveAllCart => command_RemoveAllCart;
         public void Order_RemoveAllCart(object? parameter)
         {
-            SelectedProducts.Clear();
+            // Revive products quantity.
+            Worker_ViewModel vm = new();
+            BackgroundWorker bkgWorker_RemoveAllCart = new() { WorkerReportsProgress = false, WorkerSupportsCancellation = false, };
+            bkgWorker_RemoveAllCart.DoWork += (sender, e) =>
+            {
+                try
+                {
+                    vm.ProgressState = "در حال حذف سبد...";
 
-            // Update self and item removal.
-            command_RemoveAllCart.InvokeCanExecuteChanged();
-            command_RemoveFromCart.InvokeCanExecuteChanged();
+                    List<Product> updatedProducts = new List<Product>();
 
-            command_FinalSubmit.InvokeCanExecuteChanged();
+                    foreach (var prod in SelectedProducts)
+                    {
+                        var db_GetProduct = DB._THROW_DBRESULT<Product?>(
+                            MainWindow.db.db_Get_Product(prod.ProductID).Result
+                            ) ?? throw new NullReferenceException("عدم وجود تعریف کالا در انبار!");
 
-            // Update Cash Values.
-            Update_CashValues();
+                        var foundProduct = updatedProducts.Find(x => x.ProductID == db_GetProduct.ProductID);
+                        if(foundProduct == null)
+                        {
+                            db_GetProduct.Quantity++;
+                            updatedProducts.Add(db_GetProduct);
+                        }
+                        else
+                        {
+                            foundProduct.Quantity++;
+                        }
+                    }
+
+                    var editQuantityProductResult = DB._THROW_DBRESULT<bool?>(
+                        MainWindow.db.db_Update_Products(updatedProducts).Result
+                        );
+
+                    // Everything was OK...
+                    e.Result = true;
+                }
+                catch (Exception ex)
+                {
+                    MakeMessageBoxes.Display_Error_DB(ex);
+                }
+            };
+
+            bkgWorker_RemoveAllCart.RunWorkerCompleted += (sender, e) =>
+            {
+                if ((bool?)e.Result == true)
+                {
+                    SelectedProducts.Clear();
+
+                    // Update Cash Values.
+                    Update_CashValues();
+
+                    // Update self and remove all.
+                    command_RemoveFromCart.InvokeCanExecuteChanged();
+                    command_RemoveAllCart.InvokeCanExecuteChanged();
+
+                    command_FinalSubmit.InvokeCanExecuteChanged();
+                }
+            };
+
+            Dialog_Worker dlgWorker_AddToCart = new(bkgWorker_RemoveAllCart, vm);
+            dlgWorker_AddToCart.ShowDialog();
         }
         public bool Allow_RemoveAllCart(object? parameter)
         {
@@ -475,8 +630,15 @@ namespace MMK_OSD_CashierApp.ViewModels
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            BitmapImage bmpImg = new BitmapImage(new Uri((string)value, UriKind.RelativeOrAbsolute));
-            return bmpImg;
+            try
+            {
+                BitmapImage bmpImg = new BitmapImage(new Uri((string)value, UriKind.RelativeOrAbsolute));
+                return bmpImg;
+            }
+            catch(Exception)
+            {
+                return DependencyProperty.UnsetValue;
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
