@@ -42,7 +42,7 @@
                     <RibbonButton Label="حذف کالاهای انتخابی" LargeImageSource="../Resources/Menu_Icons/menu_Product_Remove.png"/>
                 </RibbonGroup>
 
-                <RibbonGroup Header="پایگاه داده">
+                <RibbonGroup Header="پایگاه داده" Visibility="Collapsed">
                     <RibbonButton Label="تأیید نهایی" LargeImageSource="../Resources/Menu_Icons/menu_Submit.png"/>
                     <RibbonButton Label="لغو تغییرات" LargeImageSource="../Resources/ico_MsgBox_Error.png"/>
                 </RibbonGroup>
