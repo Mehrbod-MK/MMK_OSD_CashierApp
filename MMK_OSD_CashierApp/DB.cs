@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using MMK_OSD_CashierApp.Models;
 using MySql.Data;
 using MySql.Data.MySqlClient;
@@ -772,6 +773,50 @@ namespace MMK_OSD_CashierApp
                 };
             }
             catch (Exception ex)
+            {
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_ERROR,
+                    returnValue = ex
+                };
+            }
+        }
+
+        public DBResult db_Get_MostRecent_Purchase_Payment_SYNC(string customer_NationalID)
+        {
+            ulong? payment = null;
+
+            try
+            {
+                using(var connection = new MySqlConnection(get_RecentConnectionString()))
+                {
+                    connection.Open();
+
+                    using (var command = new MySqlCommand($"" +
+                        $"SELECT * FROM {DB_TABLE_NAME_PURCHASES} " +
+                        $"WHERE Customer_NationalID = \'{customer_NationalID}\' " +
+                        $"ORDER BY DateTimeSubmitted DESC " +
+                        $"LIMIT 1", connection))
+                    {
+                        var reader = command.ExecuteReader();
+
+                        if (!reader.HasRows)
+                            payment = null;
+                        else
+                        {
+                            reader.Read();
+                            payment = (ulong)reader["Total_Payment"];
+                        }
+                    }
+                }
+
+                return new DBResult()
+                {
+                    result = DBResultEnum.DB_OK,
+                    returnValue = payment,
+                };
+            }
+            catch(Exception ex)
             {
                 return new DBResult()
                 {

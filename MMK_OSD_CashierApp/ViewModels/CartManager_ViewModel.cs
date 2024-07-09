@@ -32,6 +32,8 @@ namespace MMK_OSD_CashierApp.ViewModels
 
         private string? customer_NationalID;
 
+        private float? funds_DiscountPercent { get; set; }
+
         public string? Customer_NationalID
         {
             get => customer_NationalID;
@@ -332,7 +334,33 @@ namespace MMK_OSD_CashierApp.ViewModels
             if (parameter is not TextBox txtBox_NationalID)
                 return false;
 
-            return txtBox_NationalID.Text.Length == 10;
+            if (txtBox_NationalID.Text.Length == 10)
+            {
+                try
+                {
+                    var mostCustomerPayment = DB._THROW_DBRESULT<ulong?>(
+                        MainWindow.db.db_Get_MostRecent_Purchase_Payment_SYNC(txtBox_NationalID.Text)
+                        );
+
+                    // Calculate Discount.
+                    if (mostCustomerPayment != null && funds_DiscountPercent != null)
+                    {
+                        ulong x1 = (ulong)mostCustomerPayment * (ulong)funds_DiscountPercent;
+                        ulong x2 = x1 / 10000;
+                        TotalDiscount = x2;
+                    }
+                    else
+                        TotalDiscount = 0;
+                }
+                catch(Exception ex)
+                {
+                    MakeMessageBoxes.Display_Error_DB(ex);
+                }
+
+                return true;
+            }
+            else
+                return false;
         }
 
         private RelayCommand command_RemoveAllCart;
@@ -529,11 +557,12 @@ namespace MMK_OSD_CashierApp.ViewModels
         /// <summary>
         /// Public ctor.
         /// </summary>
-        public CartManager_ViewModel(string cashier_NationalID)
+        public CartManager_ViewModel(string cashier_NationalID, float? funds_DiscountPercent)
         {
             selectedProducts = new();
 
             this.cashier_NationalID = cashier_NationalID;
+            this.funds_DiscountPercent = funds_DiscountPercent;
 
             command_AddToCart = new RelayCommand(Order_AddToCart, Allow_AddToCart);
             command_RemoveFromCart = new RelayCommand(Order_RemoveFromCart, Allow_RemoveFromCart);
@@ -565,8 +594,7 @@ namespace MMK_OSD_CashierApp.ViewModels
             }
             TotalPrice = sum_Prices;
 
-            // TODO: Calculate Discount.
-            ulong sum_Discount = 0;
+            ulong sum_Discount = TotalDiscount;
 
             long pay = (long)sum_Prices - (long)sum_Discount;
             if (pay < 0)

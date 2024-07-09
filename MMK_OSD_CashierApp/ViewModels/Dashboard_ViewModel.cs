@@ -42,7 +42,7 @@ namespace MMK_OSD_CashierApp.ViewModels
             if (User_LoggedIn == null)
                 return;
 
-            Window_CartManager wnd_CartManager = new Window_CartManager(new CartManager_ViewModel(User_LoggedIn.NationalID));
+            Window_CartManager wnd_CartManager = new Window_CartManager(new CartManager_ViewModel(User_LoggedIn.NationalID, Funds_DiscountPercent));
             wnd_CartManager.Show();
         }
         public bool Allow_CreateNewCart(object? parameter)
