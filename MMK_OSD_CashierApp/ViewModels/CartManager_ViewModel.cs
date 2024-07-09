@@ -351,6 +351,8 @@ namespace MMK_OSD_CashierApp.ViewModels
                     }
                     else
                         TotalDiscount = 0;
+
+                    Update_CashValues();
                 }
                 catch(Exception ex)
                 {
