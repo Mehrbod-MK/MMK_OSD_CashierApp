@@ -10,6 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\appIcon.ico" />
+    <None Remove="Resources\appIcon.png" />
     <None Remove="Resources\bkg_ShoppingPattern.png" />
     <None Remove="Resources\cashier.png" />
     <None Remove="Resources\gif_Loading.gif" />
@@ -48,6 +50,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\appIcon.ico" />
+    <Resource Include="Resources\appIcon.png" />
     <Resource Include="Resources\bkg_ShoppingPattern.png" />
     <Resource Include="Resources\cashier.png" />
     <Resource Include="Resources\gif_Loading.gif" />
