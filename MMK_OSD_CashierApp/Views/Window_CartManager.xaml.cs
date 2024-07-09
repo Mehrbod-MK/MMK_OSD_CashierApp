@@ -1,4 +1,5 @@
-﻿using MMK_OSD_CashierApp.Models;
+﻿using MMK_OSD_CashierApp.Helpers;
+using MMK_OSD_CashierApp.Models;
 using MMK_OSD_CashierApp.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -85,6 +86,31 @@ namespace MMK_OSD_CashierApp.Views
                 return;
 
             cmd.InvokeCanExecuteChanged();
+        }
+
+        private void Wnd_CartManager_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (this.DataContext is not CartManager_ViewModel vm_CartMgr)
+                return;
+            if (vm_CartMgr.Command_RemoveAllCart is not RelayCommand cmd)
+                return;
+
+            if(vm_CartMgr.SelectedProducts.Count > 0)
+            {
+                if (MakeMessageBoxes.Display_Warning(
+                    "آیا از بستن سبد خرید مطمئن هستید؟",
+                    "هشدار حذف سبد خرید",
+                    MessageBoxButton.YesNo,
+                    MessageBoxResult.No
+                    ) == MessageBoxResult.Yes)
+                {
+                    cmd.Execute(null);
+
+                    e.Cancel = false;
+                }
+                else
+                    e.Cancel = true;
+            }
         }
     }
 }
