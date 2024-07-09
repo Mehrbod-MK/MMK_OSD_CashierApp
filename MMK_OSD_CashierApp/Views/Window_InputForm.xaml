@@ -11,7 +11,10 @@
         FlowDirection="RightToLeft"
         WindowStartupLocation="CenterScreen"
         
-        Closing="Window_Closing">
+        Closing="Window_Closing"
+        
+        Icon="../Resources/appIcon.ico">
+    
     <Window.Background>
         <LinearGradientBrush>
             <GradientStop Color="SkyBlue" Offset="0.6"/>

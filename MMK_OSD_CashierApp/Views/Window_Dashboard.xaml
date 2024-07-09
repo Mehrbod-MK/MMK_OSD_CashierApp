@@ -9,7 +9,9 @@
         x:Name="Window_Dashboard_View"
         Title="پنل کاربری - %s %s" Height="450" Width="800"
         FlowDirection="RightToLeft"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        
+        Icon="../Resources/appIcon.ico">
 
     <Window.Resources>
         <cartmanager_viewmodel:FromDateTime_ToPersianLongDateString x:Key="Converter_FromDateTime_ToPersianLongDateString"/>
@@ -18,7 +20,7 @@
     <StackPanel x:Name="StackPanel_Dashboard">
 
         <!-- Main Menu Controls -->
-        <Ribbon SelectedIndex="2">
+        <Ribbon SelectedIndex="0">
             <!-- Main application menu -->
             <Ribbon.ApplicationMenu>
                 <RibbonApplicationMenu>

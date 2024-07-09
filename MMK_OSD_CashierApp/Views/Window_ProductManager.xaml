@@ -9,7 +9,9 @@
         Title="مدیریت کالاها" Height="450" Width="800"
         x:Name="Window_ProductManagement"
         FlowDirection="RightToLeft"
-        WindowState="Maximized">
+        WindowState="Maximized"
+        
+        Icon="../Resources/appIcon.ico">
 
     <Window.Resources>
         <converters:FromDateTime_ToPersianLongDateString x:Key="Converter_FromDateTime_ToPersianLongDateString"/>

@@ -14,6 +14,7 @@
         
         Loaded="Window_Message_Bubble_Loaded"
         
+        Icon="Resources/appIcon.ico"
         >
     <Grid>
 

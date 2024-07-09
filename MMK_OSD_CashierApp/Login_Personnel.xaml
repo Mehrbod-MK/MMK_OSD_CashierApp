@@ -15,6 +15,8 @@
         Closing="Window_Login_Personnel_Closing"
         
         KeyDown="Window_Login_Personnel_KeyDown"
+        
+        Icon="Resources/appIcon.ico"
         >
     <Window.Background>
         <ImageBrush ImageSource="./Resources/img_Bkg_LoginPersonnel.jpg" 

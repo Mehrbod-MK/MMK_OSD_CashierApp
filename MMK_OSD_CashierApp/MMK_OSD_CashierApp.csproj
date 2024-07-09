@@ -65,10 +65,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Resources\appIcon.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Resource Include="Resources\appIcon.ico" />
     <Resource Include="Resources\appIcon.png" />
     <Resource Include="Resources\bkg_ShoppingPattern.png" />

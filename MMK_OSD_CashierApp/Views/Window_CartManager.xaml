@@ -10,7 +10,9 @@
         FlowDirection="RightToLeft"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
-        x:Name="Wnd_CartManager">
+        x:Name="Wnd_CartManager"
+        
+        Icon="../Resources/appIcon.ico">
 
         <Window.Background>
             <ImageBrush ImageSource="../Resources/bkg_ShoppingPattern.png"
