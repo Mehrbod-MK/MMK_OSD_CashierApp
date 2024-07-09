@@ -1,4 +1,5 @@
-﻿using MMK_OSD_CashierApp.ViewModels;
+﻿using MMK_OSD_CashierApp.Helpers;
+using MMK_OSD_CashierApp.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,9 @@ namespace MMK_OSD_CashierApp.Views
             InitializeComponent();
 
             this.DataContext = vm_InputForm;
+
+            // Bind window itself to its context.
+            vm_InputForm.Window_InputForm = this;
 
             // Initialize form components.
             foreach(var field in vm_InputForm.FormFields)
@@ -59,6 +63,39 @@ namespace MMK_OSD_CashierApp.Views
                 StackPanel_Fields.Children.Insert(StackPanel_Fields.Children.Count, txtBlock);
                 StackPanel_Fields.Children.Insert(StackPanel_Fields.Children.Count, txtBox);
             }
+        }
+
+        private bool cancelClose = true;
+
+        private void Button_OK_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is not InputForm_ViewModel vm_InputForm)
+                return;
+
+            //  Call evaluation function.
+            vm_InputForm.IsEvaluationOK = vm_InputForm.Function_EvaluateFields.Invoke();
+            cancelClose = !vm_InputForm.IsEvaluationOK;
+
+            this.Close();
+        }
+
+        private void Button_Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            cancelClose = false;
+            this.Close();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = cancelClose;
+
+            if (e.Cancel)
+                MakeMessageBoxes.Display_Warning(
+                    "لطفاً مقادیر فرم را به درستی و در فرمت درست وارد کنید.",
+                    "هشدار",
+                    MessageBoxButton.OK,
+                    MessageBoxResult.OK
+                    );
         }
     }
 }

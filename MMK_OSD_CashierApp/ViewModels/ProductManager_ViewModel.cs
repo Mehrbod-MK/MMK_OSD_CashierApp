@@ -175,16 +175,83 @@ namespace MMK_OSD_CashierApp.ViewModels
         public ICommand Command_AddProduct => command_AddProduct;
         public void Order_AddProduct(object? parameter)
         {
-            Window_InputForm inputForm_NewProduct = new(new(
+            InputForm_ViewModel vm_InputForm = new(
                 "مشخصات کالای جدید را وارد کنید:",
                 new()
                 {
-                    new() { Question = "شماره کالا", },
-                    new() { Question = "نام کالا", },
-                }
-                ));
+                    new() { Question = "شماره کالا:", },
+                    new() { Question = "نام کالا:", },
+                    new() { Question = "قیمت:", },
+                    new() { Question = "شرکت عرضه‌کننده/تولیدکننده:", },
+                    new() { Question = "موجودی:", }
+                });
 
-            inputForm_NewProduct.ShowDialog();
+            Window_InputForm inputForm_NewProduct = new(vm_InputForm);
+
+            var infos_NewProduct = vm_InputForm.DisplayForm(bool () =>
+            {
+                return 
+                uint.TryParse(vm_InputForm.FormFields[0].DefaultResponse, out uint _) &&
+                ulong.TryParse(vm_InputForm.FormFields[2].DefaultResponse, out ulong _) &&
+                uint.TryParse(vm_InputForm.FormFields[4].DefaultResponse, out uint _) &&
+                
+                !string.IsNullOrEmpty(vm_InputForm.FormFields[1].DefaultResponse);
+            });
+
+            if (infos_NewProduct == null)
+                return;
+
+            Worker_ViewModel vm_Worker_AddProduct = new Worker_ViewModel();
+
+            BackgroundWorker worker = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false,
+            };
+
+            worker.DoWork += (sender, e) =>
+            {
+                try
+                {
+                    vm_Worker_AddProduct.ProgressState = "در حال بررسی پارامتر ها...";
+
+                    if (!uint.TryParse(vm_InputForm.FormFields[0].DefaultResponse, out uint productCode))
+                        throw new InvalidCastException("شماره کالا یک عدد نامنفی نیست.");
+                    if (string.IsNullOrEmpty(vm_InputForm.FormFields[1].DefaultResponse))
+                        throw new InvalidCastException("نام کالا نمی‌تواند خالی باشد.");
+                    if (!ulong.TryParse(vm_InputForm.FormFields[2].DefaultResponse, out ulong productPrice))
+                        throw new InvalidCastException("قیمت کالا یک عدد نامنفی نیست.");
+                    if (!uint.TryParse(vm_InputForm.FormFields[4].DefaultResponse, out uint productQuantity))
+                        throw new InvalidCastException("موجودی کالا یک عدد نامنفی نیست.");
+
+                    var writeNewProductDB = DB._THROW_DBRESULT<int>(
+                        MainWindow.db.sql_Execute_NonQuery(
+                            $"INSERT INTO {DB.DB_TABLE_NAME_PRODUCTS}(ProductID, ProductName, Price, Vendor, DateSubmitted, Quantity, ThumbImagePath) VALUES" +
+                            $"({productCode}," +
+                            $"\'{vm_InputForm.FormFields[1].DefaultResponse}\'," +
+                            $"{productPrice}," +
+                            $"{(string.IsNullOrEmpty(vm_InputForm.FormFields[3].DefaultResponse) ? "NULL" : $"\'{vm_InputForm.FormFields[3].DefaultResponse}\'")}," +
+                            $"\'{DB.Convert_FromDateTime_ToSQLDateTimeString(DateTime.Now)}\'," +
+                            $"{productQuantity}," +
+                            $"NULL);"
+                            ).Result
+                        );
+
+                    MakeMessageBoxes.Display_Notification(
+                        "کالا با موفقیت اضافه شد.",
+                        "موفق",
+                        MessageBoxButton.OK,
+                        MessageBoxResult.OK
+                        );
+                }
+                catch(Exception ex)
+                {
+                    MakeMessageBoxes.Display_Error_DB(ex);
+                }
+            };
+
+            Dialog_Worker workerDlg = new(worker, vm_Worker_AddProduct);
+            workerDlg.ShowDialog();
         }
         public bool Allow_AddProduct(object? parameter)
         {

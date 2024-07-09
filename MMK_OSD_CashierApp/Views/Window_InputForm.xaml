@@ -9,7 +9,9 @@
         SizeToContent="Height"
         ResizeMode="NoResize"
         FlowDirection="RightToLeft"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        
+        Closing="Window_Closing">
     <Window.Background>
         <LinearGradientBrush>
             <GradientStop Color="SkyBlue" Offset="0.6"/>
@@ -34,8 +36,8 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
 
-                        <Button Cursor="Hand" Foreground="Green" Margin="5" FontSize="20" Grid.Column="0" Content="تأیید"/>
-                        <Button Cursor="Hand" Foreground="Red" Margin="5" FontSize="20" Grid.Column="1" Content="لغو"/>
+                        <Button x:Name="Button_OK" Click="Button_OK_Click" Cursor="Hand" Foreground="Green" Margin="5" FontSize="20" Grid.Column="0" Content="تأیید"/>
+                        <Button x:Name="Button_Cancel" Click="Button_Cancel_Click" Cursor="Hand" Foreground="Red" Margin="5" FontSize="20" Grid.Column="1" Content="لغو"/>
                     </Grid>
                     
                 </StackPanel>
