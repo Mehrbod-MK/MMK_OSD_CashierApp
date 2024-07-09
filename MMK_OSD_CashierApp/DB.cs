@@ -620,8 +620,8 @@ namespace MMK_OSD_CashierApp
                                 $"Price = {product.Price}," +
                                 $"Vendor = \'{product.Vendor}\'," +
                                 $"DateSubmitted = \'{Convert_FromDateTime_ToSQLDateTimeString(product.DateTimeSubmitted)}\'," +
-                                $"Quantity = \'{product.Quantity}\'," +
-                                $"ThumbImagePath = {(string.IsNullOrEmpty(product.ThumbImagePath) ? "NULL" : $"\'{Path.Combine(product.ThumbImagePath)}\'")} " +
+                                $"Quantity = \'{product.Quantity}\' " +
+                                // $"ThumbImagePath = {(string.IsNullOrEmpty(product.ThumbImagePath) ? "NULL" : $"\'{Path.Combine(product.ThumbImagePath)}\'")} " +
                                 $"WHERE ProductID = {product.ProductID};", connection, transaction))
                             {
                                 // MessageBox.Show(command.CommandText);

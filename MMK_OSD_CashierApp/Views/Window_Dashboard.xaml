@@ -51,7 +51,7 @@
             </Ribbon.ApplicationMenu>
 
             <!-- Ribbon Tab #1: Cashier -->
-            <RibbonTab Header="صندوقداری">
+            <RibbonTab Header="صندوقداری" Visibility="{Binding Display_RibbonTab_Cashier}">
                 <!-- Cashier -> Customer Cart Group  -->
                 <RibbonGroup Header="سبد خرید مشتری">
                     <RibbonButton Command="{Binding Path=Command_CreateNewCart}" CommandParameter="{Binding ElementName=Window_Dashboard_View}" LargeImageSource="../Resources/Menu_Icons/menu_MgrCustCart_New.png" Label="ایجاد سبد خرید جدید"/>
@@ -67,6 +67,12 @@
                 <!-- Cashier -> Reports -->
                 <RibbonGroup Header="گزارشات">
                     <RibbonButton LargeImageSource="../Resources/Menu_Icons/menu_Icon_Reports.png" Label="گزارشات" />
+                </RibbonGroup>
+            </RibbonTab>
+
+            <RibbonTab Header="انبارداری" Visibility="{Binding Display_RibbonTab_InventoryManager}">
+                <RibbonGroup Header="کنترل پنل کالا ها">
+                    <RibbonButton Command="{Binding Command_ManageProducts}" Label="مدیریت کالا ها" LargeImageSource="../Resources/productIcon.png"/>
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>

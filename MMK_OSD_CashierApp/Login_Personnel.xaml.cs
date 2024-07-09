@@ -178,7 +178,7 @@ namespace MMK_OSD_CashierApp
                     this.Hide();
 
                     // Cashier View.
-                    if((foundUser.RoleFlags | (uint) DB.DB_Roles.DB_ROLE_Cashier) != 0)
+                    /*if((foundUser.RoleFlags | (uint) DB.DB_Roles.DB_ROLE_Cashier) != 0)
                     {
                         Views.Window_Dashboard dashboard = new(new Dashboard_ViewModel(foundUser));
                         dashboard.Show();
@@ -189,7 +189,16 @@ namespace MMK_OSD_CashierApp
                     {
                         Views.Window_ProductManager productManager = new(new ProductManager_ViewModel(foundUser));
                         productManager.Show();
-                    }
+                    }*/
+
+                    Views.Window_Dashboard dashboard = new(new(foundUser));
+                    dashboard.ShowDialog();
+
+                    // Reset credentials.
+                    TextBox_Personnel_Username.Text = string.Empty;
+                    PasswordBox_Personnel_Username.Password = string.Empty;
+
+                    this.Show();
                 }
             };
 

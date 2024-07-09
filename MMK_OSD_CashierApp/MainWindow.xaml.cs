@@ -142,16 +142,18 @@ namespace MMK_OSD_CashierApp
 
                 // Wait a little...
                 Task.Delay(500).Wait();
+            };
 
+            // Finish worker -> Display Personnel Login Page.
+            worker.RunWorkerCompleted += (sender, e) =>
+            {
                 // Hide this window.
-                Application.Current.Dispatcher.Invoke(() => this.Hide());
+                this.Hide();
 
-                // Finish worker -> Display Personnel Login Page.
-                worker.RunWorkerCompleted += (sender, e) =>
-                {
-                    var wnd_LoginPersonnel = new Login_Personnel(this);
-                    wnd_LoginPersonnel.Show();
-                };
+                var wnd_LoginPersonnel = new Login_Personnel(this);
+                wnd_LoginPersonnel.ShowDialog();
+
+                this.Show();
             };
 
             Dialog_Worker workerDialog = new(worker, workerVM);
