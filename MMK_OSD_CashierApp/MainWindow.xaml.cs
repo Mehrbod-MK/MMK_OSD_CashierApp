@@ -138,6 +138,13 @@ namespace MMK_OSD_CashierApp
                 }
                 else
                     e.Result = true;
+
+                // If result was OK, create required tables (if not previously created).
+                if((bool?)e.Result == true)
+                {
+                    workerVM.ProgressState = "در حال بررسی روابط پایگاه داده...";
+                    db.db_Initialize().Wait();
+                }
             };
 
             Dialog_Worker workerDialog = new(worker, workerVM);

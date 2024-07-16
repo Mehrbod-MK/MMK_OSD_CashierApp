@@ -129,7 +129,8 @@ namespace MMK_OSD_CashierApp
             try
             {
                 using (var connection = new MySqlConnection(get_ConnectionString(isRootConnection: true, 
-                    rootPassword: knownRootPassword)))
+                    rootPassword: knownRootPassword,
+                    noSchema: true)))
                 {
                     connection.ConfigureAwait(false);
                     await connection.OpenAsync();
@@ -826,6 +827,60 @@ namespace MMK_OSD_CashierApp
             }
         }
 
+        public async Task db_Initialize()
+        {
+            // Create MMK_OSD_CashierApp database.
+            await sql_Execute_NonQuery($"CREATE DATABASE {schema};");
+
+            // Create Table: Users
+            await sql_Execute_NonQuery($"CREATE TABLE {schema}.{DB_TABLE_NAME_USERS}(" +
+                $"NationalID VARCHAR(100) PRIMARY KEY NOT NULL," +
+                $"LoginPassword VARCHAR(1024) NOT NULL," +
+                $"OptionalUsername VARCHAR(10)," +
+                $"FirstName VARCHAR(255)," +
+                $"LastName VARCHAR(255)," +
+                $"RoleFlags INTEGER UNSIGNED NOT NULL," +
+                $"Email VARCHAR(100)," +
+                $"RegisterDateTime DATETIME NOT NULL," +
+                $"LastLoginDateTime DATETIME" +
+                $");");
+
+            // Create Table: Products
+            await sql_Execute_NonQuery($"CREATE TABLE {schema}.{DB_TABLE_NAME_PRODUCTS}(" +
+                $"ProductID INTEGER UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT," +
+                $"ProductName VARCHAR(255) NOT NULL," +
+                $"Price BIGINT NOT NULL," +
+                $"Vendor VARCHAR(100)," +
+                $"DateSubmitted DATETIME NOT NULL," +
+                $"Quantity INTEGER UNSIGNED NOT NULL," +
+                $"ThumbImagePath VARCHAR(255)" +
+                $");");
+
+            // Create Table: Purchases
+            await sql_Execute_NonQuery($"CREATE TABLE {schema}.{DB_TABLE_NAME_PURCHASES}(" +
+                $"PurchaseID INTEGER UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT," +
+                $"Customer_NationalID VARCHAR(100) NOT NULL," +
+                $"DateTimeSubmitted DATETIME NOT NULL," +
+                $"SubmittedBy_NationalID VARCHAR(100) NOT NULL," +
+                $"Num_ProductsPurchased INTEGER UNSIGNED NOT NULL," +
+                $"Total_Price BIGINT UNSIGNED NOT NULL," +
+                $"Total_Discount BIGINT UNSIGNED NOT NULL," +
+                $"Total_Payment BIGINT UNSIGNED NOT NULL," +
+                $"FOREIGN KEY(Customer_NationalID) REFERENCES {DB.DB_TABLE_NAME_USERS}(NationalID) ON UPDATE CASCADE ON DELETE CASCADE," +
+                $"FOREIGN KEY(SubmittedBy_NationalID) REFERENCES {DB.DB_TABLE_NAME_USERS}(NationalID) ON UPDATE CASCADE ON DELETE CASCADE," +
+                $");");
+
+            // Create Table: Paramters
+            await sql_Execute_NonQuery($"CREATE TABLE {schema}.{DB_TABLE_NAME_PARAMETERS}(" +
+                $"Parameter VARCHAR(100) PRIMARY KEY NOT NULL," +
+                $"Value VARCHAR(100)" +
+                $");");
+
+            // Assign default parameters and values.
+            await sql_Execute_NonQuery($"INSERT INTO {schema}.{DB_TABLE_NAME_PARAMETERS} VALUES" +
+                $"(\'{DB_PARAMETER_MAX_DISCOUNT_PERCENT}\', 10);");
+        }
+
         public static string SecureStringToString(SecureString value)
         {
             IntPtr bstr = Marshal.SecureStringToBSTR(value);
@@ -893,7 +948,8 @@ namespace MMK_OSD_CashierApp
         private string get_ConnectionString(string server = DB_DEFAULT_SERVER, int port = DB_DEFAULT_PORT,
             string schema = DB_DEFAULT_APP_SCHEMA,
             string username = DB_DEFAULT_USERNAME, SecureString? password = null, SecureString? rootPassword = null,
-            bool isRootConnection = false)
+            bool isRootConnection = false,
+            bool noSchema = false)
         {
             if (!isRootConnection)
             {
@@ -907,14 +963,14 @@ namespace MMK_OSD_CashierApp
                     return
                         $"SERVER={server};" +
                         $"PORT={port};" +
-                        $"DATABASE={schema};" +
+                        $"{(noSchema ? string.Empty : $"DATABASE={schema};")}" +
                         $"UID={username};" +
                         $"PASSWORD={SecureStringToString(password)};";
                 else
                     return
                         $"SERVER={server};" +
                         $"PORT={port};" +
-                        $"DATABASE={schema};" +
+                        $"{(noSchema ? string.Empty : $"DATABASE={schema};")}" +
                         $"UID={username};";
             }
             else
@@ -929,7 +985,7 @@ namespace MMK_OSD_CashierApp
                     return
                     $"SERVER={server};" +
                     $"PORT={port};" +
-                    $"DATABASE={schema};" +
+                    $"{(noSchema ? string.Empty : $"DATABASE={schema};")}" +
                     $"UID={DB_ROOT_USER}";
                 }
                 else
@@ -944,7 +1000,7 @@ namespace MMK_OSD_CashierApp
                        $"SERVER={server};" +
                        $"PORT={port};" +
                        $"UID={DB_ROOT_USER};" +
-                       $"DATABASE={schema};" +
+                       $"{(noSchema ? string.Empty : $"DATABASE={schema};")}" +
                        $"PASSWORD={SecureStringToString(rootPassword)}";
                 }
             }
